@@ -47,7 +47,6 @@ class _SearchBarState extends State<SearchBar> {
             width: size.width * 0.9,
             height: searchBarHeight * 0.9,
             child: TextField(
-              maxLines: 100,
               decoration: InputDecoration(
                 hintText: 'Search Notes',
                 hintStyle: TextStyle(
@@ -56,7 +55,7 @@ class _SearchBarState extends State<SearchBar> {
                 ),
                 border: InputBorder.none,
               ),
-              cursorColor: theme.primaryColor,
+              cursorColor: AppColor.appPrimaryColor,
               style: const TextStyle(
                 color: AppColor.appSecondaryColor,
                 fontWeight: FontWeight.w400,

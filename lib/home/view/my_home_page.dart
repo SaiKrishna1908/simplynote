@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
+
+import 'cubit/my_home_page_cubit.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -54,18 +56,34 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SearchBar(
-              searchCallback: (s) => debugPrint(s),
-            ),
-            _gap(),
-            titleWidget('Your Notes'),
-          ],
-        ),
+      body: BlocBuilder<MyHomePageCubit, MyHomePageState>(
+        builder: (context, state) {
+          if (state is MyHomePageInitial) {
+            context.read<MyHomePageCubit>().getUserNotes();
+          } else if (state is MyHomePageLoading) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: AppColor.appPrimaryColor,
+              ),
+            );
+          } else if (state is MyHomePageLoaded) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SearchBar(
+                    searchCallback: (s) => debugPrint(s),
+                  ),
+                  _gap(),
+                  titleWidget('Your Notes'),
+                  _gap(),
+                ],
+              ),
+            );
+          } else if (state is MyHomePageError) {}
+          return Container();
+        },
       ),
     );
   }
