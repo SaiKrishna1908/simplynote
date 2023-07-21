@@ -16,13 +16,15 @@ class AppColor {
       elevation: 0,
     ),
     textTheme: const TextTheme().apply(
-        bodyColor: Colors.red,
-        displayColor: Colors.red,
-        decorationColor: Colors.red),
-    hintColor: _lighten(appPrimaryColor, 0.5),
+      bodyColor: Colors.red,
+      displayColor: Colors.red,
+      decorationColor: Colors.red,
+    ),
+    hintColor: lighten(appPrimaryColor, 0.5),
+    fontFamily: 'Open-Sans',
   );
 
-  static Color _lighten(Color color, [double amount = 0.1]) {
+  static Color lighten(Color color, [double amount = 0.1]) {
     assert(amount >= 0 && amount <= 1);
 
     final hsl = HSLColor.fromColor(color);
@@ -32,7 +34,7 @@ class AppColor {
     return hslLight.toColor();
   }
 
-  static Color _darken(Color color, [double amount = 0.1]) {
+  static Color darken(Color color, [double amount = 0.1]) {
     assert(amount >= 0 && amount <= 1);
 
     final hsl = HSLColor.fromColor(color);

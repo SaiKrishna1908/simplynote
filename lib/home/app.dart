@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simplynote/app_color.dart';
+import 'package:simplynote/auth/login/login_page.dart';
 import 'package:simplynote/home/search_bar.dart';
 
 class MyApp extends StatelessWidget {
@@ -8,11 +9,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Notes App',
-      theme: AppColor.lightMode,
-      home: const MyHomePage(),
-    );
+    return const MyHomePage();
   }
 }
 
@@ -36,9 +33,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Text(
         title,
         style: const TextStyle(
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
           color: AppColor.appPrimaryColor,
           fontSize: 40,
+          letterSpacing: 0.1,
+          wordSpacing: 0.5,
+          fontStyle: FontStyle.italic,
         ),
         textAlign: TextAlign.center,
       ),

@@ -31,7 +31,7 @@ class _SearchBarState extends State<SearchBar> {
         ),
         border: Border.all(
           color: theme.primaryColor,
-          width: 2,
+          width: 0.5,
         ),
       ),
       child: ListView(
