@@ -8,8 +8,9 @@ import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/login/cubit/login_cubit.dart';
 import 'package:simplynote/auth/login/login_page.dart';
 import 'package:simplynote/firebase_options.dart';
-import 'package:simplynote/home/app.dart';
 import 'package:simplynote/auth/auth_service.dart';
+import 'package:simplynote/home/view/create_note.dart';
+import 'package:simplynote/home/view/my_home_page.dart';
 
 final goRouter = GoRouter(
   routes: [
@@ -23,6 +24,10 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/home',
       builder: (context, state) => const MyHomePage(),
+    ),
+    GoRoute(
+      path: '/create',
+      builder: (context, state) => const CreateNote(),
     )
   ],
 );

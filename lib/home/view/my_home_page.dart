@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:simplynote/app_color.dart';
-import 'package:simplynote/auth/login/login_page.dart';
-import 'package:simplynote/home/search_bar.dart';
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return const MyHomePage();
-  }
-}
+import 'package:simplynote/home/widget/search_bar.dart';
+import 'package:simplynote/main.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -28,7 +19,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget titleWidget(String title) {
-    final theme = Theme.of(context);
     return Expanded(
       child: Text(
         title,
@@ -36,8 +26,8 @@ class _MyHomePageState extends State<MyHomePage> {
           fontWeight: FontWeight.w600,
           color: AppColor.appPrimaryColor,
           fontSize: 40,
-          letterSpacing: 0.1,
-          wordSpacing: 0.5,
+          letterSpacing: 0,
+          wordSpacing: 0,
           fontStyle: FontStyle.italic,
         ),
         textAlign: TextAlign.center,
@@ -48,6 +38,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: CircleAvatar(
+          radius: 30,
+          backgroundColor: AppColor.appPrimaryColor,
+          child: IconButton(
+            icon: const Icon(
+              Icons.add,
+              color: AppColor.appAccentColor,
+            ),
+            onPressed: () => goRouter.push('/create'),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
