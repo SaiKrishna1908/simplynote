@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/constants.dart';
-import 'package:simplynote/home/view/cubit/create_note_cubit.dart';
+import 'package:simplynote/home/cubit/create_note_cubit.dart';
 
 part 'my_home_page_state.dart';
 
@@ -25,7 +25,7 @@ class MyHomePageCubit extends Cubit<MyHomePageState> {
         final title = doc.data()[noteTitle];
         final content = doc.data()[noteContent];
 
-        return NoteModel(uuid, title, content);
+        return NoteModel(uuid, title, content, doc.id);
       }).toList();
 
       emit(MyHomePageLoaded(userNotes, false, userNotes));

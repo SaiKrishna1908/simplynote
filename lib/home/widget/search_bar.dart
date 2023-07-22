@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simplynote/app_color.dart';
-import 'package:simplynote/home/view/cubit/my_home_page_cubit.dart';
+import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({super.key, required this.searchCallback});

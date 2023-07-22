@@ -14,9 +14,10 @@ import 'package:simplynote/auth/login/cubit/login_cubit.dart';
 import 'package:simplynote/auth/login/login_page.dart';
 import 'package:simplynote/firebase_options.dart';
 import 'package:simplynote/auth/auth_service.dart';
+import 'package:simplynote/home/cubit/create_note_cubit.dart';
+import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/view/create_note.dart';
-import 'package:simplynote/home/view/cubit/create_note_cubit.dart';
-import 'package:simplynote/home/view/cubit/my_home_page_cubit.dart';
+
 import 'package:simplynote/home/view/my_home_page.dart';
 
 final goRouter = GoRouter(
@@ -39,7 +40,7 @@ final goRouter = GoRouter(
       path: '/create',
       builder: (context, state) => BlocProvider(
         create: (context) => CreateNoteCubit(),
-        child: CreateNote(),
+        child: const CreateNote(),
       ),
     )
   ],

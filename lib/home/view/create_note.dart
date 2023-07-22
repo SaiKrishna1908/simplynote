@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simplynote/app_color.dart';
-import 'package:simplynote/home/view/cubit/create_note_cubit.dart';
+import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateNote extends StatefulWidget {
@@ -53,11 +53,8 @@ class _CreateNoteState extends State<CreateNote> {
       child: TextField(
         controller: _contentController,
         onChanged: (value) async {
-          await callBack(NoteModel(
-            _documentUuid,
-            _titleController.text,
-            value,
-          ));
+          await callBack(
+              NoteModel(_documentUuid, _titleController.text, value, null));
         },
         cursorColor: AppColor.appPrimaryColor,
         decoration: const InputDecoration(
@@ -89,11 +86,7 @@ class _CreateNoteState extends State<CreateNote> {
       controller: _titleController,
       cursorColor: AppColor.appPrimaryColor,
       onChanged: (value) => callBack(
-        NoteModel(
-          _documentUuid,
-          value,
-          _contentController.text,
-        ),
+        NoteModel(_documentUuid, value, _contentController.text, null),
       ),
       decoration: const InputDecoration(
         isDense: true,

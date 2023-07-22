@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simplynote/app_color.dart';
-import 'package:simplynote/home/view/cubit/create_note_cubit.dart';
+import 'package:simplynote/home/cubit/create_note_cubit.dart';
+import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
-
-import 'cubit/my_home_page_cubit.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -105,11 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: CircleAvatar(
           radius: 30,
-          backgroundColor: AppColor.appAccentColor,
+          backgroundColor: AppColor.darken(AppColor.appAccentColor, 0.5),
           child: IconButton(
             icon: const Icon(
               Icons.add,
-              color: AppColor.appSecondaryColor,
+              color: AppColor.appAccentColor,
               size: 30,
             ),
             onPressed: () => goRouter.push('/create'),
@@ -129,9 +128,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           } else if (state is MyHomePageLoaded) {
-            return GestureDetector(
-              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-              child: SingleChildScrollView(
+            return SingleChildScrollView(
+              child: RefreshIndicator(
+                onRefresh: () => context.read<MyHomePageCubit>().getUserNotes(),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
                   child: Column(
