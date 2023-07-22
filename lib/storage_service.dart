@@ -15,6 +15,8 @@ abstract class StorageService {
   Future<void> editNote(String uuid);
 
   Future<NoteModel?> getNote(String uuid);
+
+  Future<List<NoteModel>> fetchAllUserNotes();
 }
 
 class FirebaseStorage extends StorageService {
@@ -25,11 +27,11 @@ class FirebaseStorage extends StorageService {
     final noteBookByUuid = await getNote(noteModel.uuid);
 
     if (noteBookByUuid != null) {
-      userNotesCollection
+      await userNotesCollection
           .doc(noteBookByUuid.firestoreId)
           .update(noteModel.toJson());
     } else {
-      userNotesCollection.add(noteModel.toJson());
+      await userNotesCollection.add(noteModel.toJson());
     }
   }
 
@@ -56,5 +58,20 @@ class FirebaseStorage extends StorageService {
     }
 
     return null;
+  }
+
+  @override
+  Future<List<NoteModel>> fetchAllUserNotes() async {
+    final userCollection = await userNotesCollection.get();
+
+    final userDocs = userCollection.docs
+        .map(
+          (doc) => NoteModel.fromJson(
+            doc.data()..putIfAbsent(firebaseId, () => doc.id),
+          ),
+        )
+        .toList();
+
+    return userDocs;
   }
 }

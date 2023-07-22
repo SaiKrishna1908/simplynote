@@ -68,10 +68,10 @@ class _LoginInViewState extends State<LoginInView> {
                   Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(10),
-                    child: const Text(
+                    child: Text(
                       'Notes',
                       style: TextStyle(
-                        color: AppColor.appPrimaryColor,
+                        color: AppColor.lighten(AppColor.appPrimaryColor),
                         fontWeight: FontWeight.w900,
                         fontSize: 50,
                         fontStyle: FontStyle.italic,

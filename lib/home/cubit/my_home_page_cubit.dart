@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
+import 'package:simplynote/storage_service.dart';
 
 part 'my_home_page_state.dart';
 
@@ -19,15 +20,8 @@ class MyHomePageCubit extends Cubit<MyHomePageState> {
     emit(MyHomePageLoading());
 
     try {
-      final collectionDocs = await userNotesCollection.get();
-      final userNotes = collectionDocs.docs.map((doc) {
-        final uuid = doc.data()[noteUuid];
-        final title = doc.data()[noteTitle];
-        final content = doc.data()[noteContent];
-
-        return NoteModel(uuid, title, content, doc.id);
-      }).toList();
-
+      final storageService = FirebaseStorage();
+      final userNotes = await storageService.fetchAllUserNotes();
       emit(MyHomePageLoaded(userNotes, false, userNotes));
     } on FirebaseException catch (firebaseException) {
       emit(MyHomePageError(firebaseException.message!));

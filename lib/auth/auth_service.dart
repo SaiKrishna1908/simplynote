@@ -23,6 +23,12 @@ class AuthService {
   }
 
   Future<bool> isUserLoggedIn() async {
-    return GetIt.I<SharedPreferences>().containsKey(Constants.uid);
+    return (GetIt.I<SharedPreferences>().containsKey(Constants.uid) &&
+        firebaseAuth.currentUser != null);
+  }
+
+  Future<void> signOut() async {
+    await GetIt.I<SharedPreferences>().clear();
+    await firebaseAuth.signOut();
   }
 }

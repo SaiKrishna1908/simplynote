@@ -12,13 +12,13 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
       : super(
           CreateNoteState(
             NoteModel(Constants.emptyString, Constants.emptyString,
-                Constants.emptyString, null),
+                Constants.emptyString, null, 1),
           ),
         );
 
   Future<void> createNote(NoteModel noteModel, String uuid) async {
     final StorageService storageService = FirebaseStorage();
 
-    storageService.createNote(noteModel);
+    await storageService.createNote(noteModel);
   }
 }

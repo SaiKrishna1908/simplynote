@@ -1,8 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:simplynote/app_color.dart';
+import 'package:simplynote/auth/auth_service.dart';
+import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
+import 'package:simplynote/home/widget/drawer.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
 
@@ -50,14 +56,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget noteWidget(NoteModel noteModel) {
+    final cardColor = Constants.noteColors[noteModel.colorId];
     return SizedBox(
       height: 80,
       width: 80,
       child: Card(
         elevation: 15,
         borderOnForeground: true,
-        shadowColor: AppColor.darken(AppColor.appPrimaryColor, 0.9),
-        color: AppColor.appPrimaryColor,
+        shadowColor: AppColor.darken(cardColor, 0.9),
+        color: cardColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
@@ -70,8 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 noteModel.title,
                 style: const TextStyle(
                   color: AppColor.appAccentColor,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
@@ -85,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: AppColor.appAccentColor,
                     overflow: TextOverflow.ellipsis,
                     fontSize: 14,
-                    fontWeight: FontWeight.normal,
+                    fontWeight: FontWeight.w500,
                     wordSpacing: 0.5,
                   ),
                 ),
@@ -104,19 +111,40 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: CircleAvatar(
           radius: 30,
-          backgroundColor: AppColor.darken(AppColor.appAccentColor, 0.5),
+          backgroundColor: AppColor.appSecondaryColor,
           child: IconButton(
             icon: const Icon(
               Icons.add,
               color: AppColor.appAccentColor,
               size: 30,
             ),
-            onPressed: () => goRouter.push('/create'),
+            onPressed: () => goRouter.push('/create').then((value) async {
+              await context.read<MyHomePageCubit>().getUserNotes();
+            }),
           ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () => showModalBottomSheet(
+                  context: context,
+                  builder: (context) => Wrap(
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.logout),
+                            title: const Text('Logout'),
+                            onTap: () async {
+                              await GetIt.I<AuthService>().signOut();
+                              goRouter.go('/');
+                            },
+                          )
+                        ],
+                      )),
+              icon: const Icon(Icons.more_vert))
+        ],
+      ),
       body: BlocBuilder<MyHomePageCubit, MyHomePageState>(
         builder: (context, state) {
           if (state is MyHomePageInitial) {
@@ -141,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             .where((element) => element.title.contains(s)),
                       ),
                       _gap(),
-                      titleWidget('Your Notes'),
+                      titleWidget('My Notes'),
                       _gap(),
                       notesGridView(state.isSearchActive
                           ? state.searchNotes

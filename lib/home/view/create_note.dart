@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simplynote/app_color.dart';
+import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,6 +18,7 @@ class _CreateNoteState extends State<CreateNote> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late String _documentUuid;
+  late int _colorId;
 
   @override
   void initState() {
@@ -22,6 +26,7 @@ class _CreateNoteState extends State<CreateNote> {
     _titleController = TextEditingController();
     _contentController = TextEditingController();
     _documentUuid = const Uuid().v4();
+    _colorId = Random().nextInt(Constants.noteColors.length);
   }
 
   @override
@@ -53,8 +58,8 @@ class _CreateNoteState extends State<CreateNote> {
       child: TextField(
         controller: _contentController,
         onChanged: (value) async {
-          await callBack(
-              NoteModel(_documentUuid, _titleController.text, value, null));
+          await callBack(NoteModel(
+              _documentUuid, _titleController.text, value, null, _colorId));
         },
         cursorColor: AppColor.appPrimaryColor,
         decoration: const InputDecoration(
@@ -86,7 +91,8 @@ class _CreateNoteState extends State<CreateNote> {
       controller: _titleController,
       cursorColor: AppColor.appPrimaryColor,
       onChanged: (value) => callBack(
-        NoteModel(_documentUuid, value, _contentController.text, null),
+        NoteModel(
+            _documentUuid, value, _contentController.text, null, _colorId),
       ),
       decoration: const InputDecoration(
         isDense: true,
