@@ -9,8 +9,10 @@ class MyHomePageLoading extends MyHomePageState {}
 
 class MyHomePageLoaded extends MyHomePageState {
   final List<NoteModel> userNotes;
+  final bool isSearchActive;
+  final List<NoteModel> searchNotes;
 
-  MyHomePageLoaded(this.userNotes);
+  MyHomePageLoaded(this.userNotes, this.isSearchActive, this.searchNotes);
 }
 
 class MyHomePageError extends MyHomePageState {

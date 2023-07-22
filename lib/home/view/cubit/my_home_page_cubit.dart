@@ -28,10 +28,22 @@ class MyHomePageCubit extends Cubit<MyHomePageState> {
         return NoteModel(uuid, title, content);
       }).toList();
 
-      emit(MyHomePageLoaded(userNotes));
+      emit(MyHomePageLoaded(userNotes, false, userNotes));
     } on FirebaseException catch (firebaseException) {
       emit(MyHomePageError(firebaseException.message!));
       return;
+    }
+  }
+
+  Future<void> toggleSearch(bool search, String searchText) async {
+    if (state is MyHomePageLoaded) {
+      final ls = state as MyHomePageLoaded;
+      final searchNotes = <NoteModel>[];
+      if (search == true) {
+        searchNotes.addAll(ls.userNotes.where((element) =>
+            element.title.toLowerCase().contains(searchText.toLowerCase())));
+      }
+      emit(MyHomePageLoaded(ls.userNotes, search, searchNotes));
     }
   }
 }
