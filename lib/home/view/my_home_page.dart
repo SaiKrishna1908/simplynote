@@ -60,11 +60,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return SizedBox(
       height: 80,
       width: 80,
-      child: Card(
-        elevation: 15,
-        borderOnForeground: true,
-        shadowColor: AppColor.darken(cardColor, 0.9),
-        color: cardColor,
+      child: Container(
+        decoration: BoxDecoration(
+          color: cardColor,
+          border: Border.all(width: 1),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                color: AppColor.darken(
+                  cardColor,
+                  0.8,
+                ),
+                blurRadius: 1,
+                spreadRadius: 0.5,
+                blurStyle: BlurStyle.outer),
+          ],
+        ),
+        // elevation: 15,
+        // borderOnForeground: true,
+        // shadowColor: AppColor.darken(cardColor, 0.9),
+
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,

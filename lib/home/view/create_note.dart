@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,9 @@ class _CreateNoteState extends State<CreateNote> {
   late String _documentUuid;
   late int _colorId;
 
+  final int apiCallCronTimer = 3;
+
+  Timer? timer;
   @override
   void initState() {
     super.initState();
@@ -27,6 +31,24 @@ class _CreateNoteState extends State<CreateNote> {
     _contentController = TextEditingController();
     _documentUuid = const Uuid().v4();
     _colorId = Random().nextInt(Constants.noteColors.length);
+    timer = Timer.periodic(
+      Duration(seconds: apiCallCronTimer),
+      (timer) async {
+        if (_titleController.text.isNotEmpty ||
+            _contentController.text.isNotEmpty) {
+          context.read<CreateNoteCubit>().createNote(
+              NoteModel(_documentUuid, _titleController.text,
+                  _contentController.text, null, _colorId),
+              _documentUuid);
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -56,10 +78,11 @@ class _CreateNoteState extends State<CreateNote> {
   Widget contentSection(Future<void> Function(NoteModel) callBack) {
     return Expanded(
       child: TextField(
+        maxLines: 100,
         controller: _contentController,
-        onChanged: (value) async {
-          await callBack(NoteModel(
-              _documentUuid, _titleController.text, value, null, _colorId));
+        onSubmitted: (value) async {
+          await callBack(NoteModel(_documentUuid, _titleController.text,
+              _contentController.text, null, _colorId));
         },
         cursorColor: AppColor.appPrimaryColor,
         decoration: const InputDecoration(
@@ -90,9 +113,9 @@ class _CreateNoteState extends State<CreateNote> {
     return TextField(
       controller: _titleController,
       cursorColor: AppColor.appPrimaryColor,
-      onChanged: (value) => callBack(
-        NoteModel(
-            _documentUuid, value, _contentController.text, null, _colorId),
+      onSubmitted: (value) => callBack(
+        NoteModel(_documentUuid, _titleController.text, _contentController.text,
+            null, _colorId),
       ),
       decoration: const InputDecoration(
         isDense: true,
