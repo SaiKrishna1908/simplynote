@@ -12,8 +12,6 @@ abstract class StorageService {
 
   Future<void> deleteNote(String uuid);
 
-  Future<void> editNote(String uuid);
-
   Future<NoteModel?> getNote(String uuid);
 
   Future<List<NoteModel>> fetchAllUserNotes();
@@ -27,23 +25,23 @@ class FirebaseStorage extends StorageService {
     final noteBookByUuid = await getNote(noteModel.uuid);
 
     if (noteBookByUuid != null) {
-      await userNotesCollection
-          .doc(noteBookByUuid.firestoreId)
-          .update(noteModel.toJson());
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        await userNotesCollection
+            .doc(noteBookByUuid.firestoreId)
+            .update(noteModel.toJson());
+      });
     } else {
-      await userNotesCollection.add(noteModel.toJson());
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        await userNotesCollection.add(
+          noteModel.toJson(),
+        );
+      });
     }
   }
 
   @override
   Future<void> deleteNote(String uuid) {
     // TODO: implement deleteNote
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> editNote(String uuid) {
-    // TODO: implement editNote
     throw UnimplementedError();
   }
 

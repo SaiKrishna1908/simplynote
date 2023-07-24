@@ -8,12 +8,9 @@ import 'package:simplynote/storage_service.dart';
 part 'create_note_state.dart';
 
 class CreateNoteCubit extends Cubit<CreateNoteState> {
-  CreateNoteCubit()
+  CreateNoteCubit(NoteModel notemodel)
       : super(
-          CreateNoteState(
-            NoteModel(Constants.emptyString, Constants.emptyString,
-                Constants.emptyString, null, 1),
-          ),
+          CreateNoteState(notemodel),
         );
 
   Future<void> createNote(NoteModel noteModel, String uuid) async {

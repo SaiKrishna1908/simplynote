@@ -57,64 +57,102 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget noteWidget(NoteModel noteModel) {
     final cardColor = Constants.noteColors[noteModel.colorId];
-    return SizedBox(
-      height: 80,
-      width: 80,
-      child: Container(
-        decoration: BoxDecoration(
-          color: cardColor,
-          border: Border.all(width: 1),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-                color: AppColor.darken(
-                  cardColor,
-                  0.8,
-                ),
-                blurRadius: 1,
-                spreadRadius: 0.5,
-                blurStyle: BlurStyle.outer),
-          ],
-        ),
-        // elevation: 15,
-        // borderOnForeground: true,
-        // shadowColor: AppColor.darken(cardColor, 0.9),
-
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 20,
+    return InkWell(
+      onTap: () => goRouter
+          .push('/edit/${noteModel.uuid}', extra: noteModel)
+          .then((value) => context.read<MyHomePageCubit>().getUserNotes()),
+      child: SizedBox(
+        height: 80,
+        width: 80,
+        child: Container(
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(20),
+            // Uncomment to enable border along cards
+            // border: Border.all(width: 2),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: AppColor.darken(
+            //       cardColor,
+            //       0.8,
+            //     ),
+            //     blurRadius: 1,
+            //     spreadRadius: 1,
+            //   ),
+            // ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                noteModel.title,
-                style: const TextStyle(
-                  color: AppColor.appAccentColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
-              ),
-              _gap(),
-              Expanded(
-                child: Text(
-                  noteModel.content,
-                  maxLines: 100,
+          // elevation: 15,
+          // borderOnForeground: true,
+          // shadowColor: AppColor.darken(cardColor, 0.9),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 20,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  noteModel.title,
                   style: const TextStyle(
                     color: AppColor.appAccentColor,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    wordSpacing: 0.5,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
                 ),
-              )
-            ],
+                _gap(),
+                Expanded(
+                  child: Text(
+                    noteModel.content,
+                    maxLines: 100,
+                    style: const TextStyle(
+                      color: AppColor.appAccentColor,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      wordSpacing: 0.5,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> signOut() async {
+    await GetIt.I<AuthService>().signOut();
+    goRouter.go('/');
+  }
+
+  Future<void> showBottomSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) => Wrap(
+        children: [
+          Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+            child: ListTile(
+              style: ListTileStyle.list,
+              iconColor: AppColor.appSecondaryColor,
+              dense: false,
+              leading: const Icon(Icons.logout),
+              title: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: AppColor.appSecondaryColor,
+                  fontSize: 18,
+                ),
+              ),
+              onTap: () => signOut(),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -143,20 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () => showModalBottomSheet(
-                  context: context,
-                  builder: (context) => Wrap(
-                        children: [
-                          ListTile(
-                            leading: const Icon(Icons.logout),
-                            title: const Text('Logout'),
-                            onTap: () async {
-                              await GetIt.I<AuthService>().signOut();
-                              goRouter.go('/');
-                            },
-                          )
-                        ],
-                      )),
+              onPressed: () => showBottomSheet(),
               icon: const Icon(Icons.more_vert))
         ],
       ),

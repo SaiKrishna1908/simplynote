@@ -9,8 +9,12 @@ import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateNote extends StatefulWidget {
-  const CreateNote({super.key});
-
+  const CreateNote(
+      {super.key, this.title, this.content, this.colorId, this.documentId});
+  final String? title;
+  final String? content;
+  final int? colorId;
+  final String? documentId;
   @override
   State<CreateNote> createState() => _CreateNoteState();
 }
@@ -21,16 +25,16 @@ class _CreateNoteState extends State<CreateNote> {
   late String _documentUuid;
   late int _colorId;
 
-  final int apiCallCronTimer = 3;
+  final int apiCallCronTimer = 2;
 
   Timer? timer;
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController();
-    _contentController = TextEditingController();
-    _documentUuid = const Uuid().v4();
-    _colorId = Random().nextInt(Constants.noteColors.length);
+    _titleController = TextEditingController(text: widget.title);
+    _contentController = TextEditingController(text: widget.content);
+    _documentUuid = widget.documentId ?? const Uuid().v4();
+    _colorId = widget.colorId ?? Random().nextInt(Constants.noteColors.length);
     timer = Timer.periodic(
       Duration(seconds: apiCallCronTimer),
       (timer) async {
@@ -77,10 +81,10 @@ class _CreateNoteState extends State<CreateNote> {
 
   Widget contentSection(Future<void> Function(NoteModel) callBack) {
     return Expanded(
-      child: TextField(
+      child: TextFormField(
         maxLines: 100,
         controller: _contentController,
-        onSubmitted: (value) async {
+        onFieldSubmitted: (value) async {
           await callBack(NoteModel(_documentUuid, _titleController.text,
               _contentController.text, null, _colorId));
         },
@@ -110,10 +114,10 @@ class _CreateNoteState extends State<CreateNote> {
   }
 
   Widget titleSection(Future<void> Function(NoteModel) callBack) {
-    return TextField(
+    return TextFormField(
       controller: _titleController,
       cursorColor: AppColor.appPrimaryColor,
-      onSubmitted: (value) => callBack(
+      onFieldSubmitted: (value) => callBack(
         NoteModel(_documentUuid, _titleController.text, _contentController.text,
             null, _colorId),
       ),

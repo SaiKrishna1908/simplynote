@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/login/cubit/login_cubit.dart';
 import 'package:simplynote/auth/login/login_page.dart';
+import 'package:simplynote/constants.dart';
 import 'package:simplynote/firebase_options.dart';
 import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
@@ -39,9 +40,31 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/create',
       builder: (context, state) => BlocProvider(
-        create: (context) => CreateNoteCubit(),
+        create: (context) => CreateNoteCubit(NoteModel(Constants.emptyString,
+            Constants.emptyString, Constants.emptyString, null, 1)),
         child: const CreateNote(),
       ),
+    ),
+    GoRoute(
+      path: '/edit/:uuid',
+      name: 'edit',
+      builder: (context, state) {
+        final noteModel = (state.extra as NoteModel);
+        return BlocProvider(
+          create: (context) {
+            return CreateNoteCubit(
+              NoteModel(noteModel.uuid, noteModel.title, noteModel.content,
+                  noteModel.firestoreId, noteModel.colorId),
+            );
+          },
+          child: CreateNote(
+            title: noteModel.title,
+            content: noteModel.content,
+            colorId: noteModel.colorId,
+            documentId: noteModel.uuid,
+          ),
+        );
+      },
     )
   ],
 );
