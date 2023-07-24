@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/constants.dart';

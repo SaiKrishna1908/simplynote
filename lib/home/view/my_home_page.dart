@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -8,7 +6,6 @@ import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
-import 'package:simplynote/home/widget/drawer.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
 
@@ -30,13 +27,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Text(
       title,
       style: const TextStyle(
-        fontWeight: FontWeight.w600,
-        color: AppColor.appPrimaryColor,
-        fontSize: 40,
-        letterSpacing: 0,
-        wordSpacing: 0,
-        fontStyle: FontStyle.italic,
-      ),
+          fontWeight: FontWeight.w400,
+          color: AppColor.appPrimaryColor,
+          fontSize: 30,
+          letterSpacing: 0,
+          wordSpacing: 0,
+          fontFamily: 'Brandon'),
       textAlign: TextAlign.center,
     );
   }
@@ -203,13 +199,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SearchBar(
-                        searchCallback: (s) => state.userNotes
-                            .where((element) => element.title.contains(s)),
-                      ),
+                      titleWidget('Notes'),
                       _gap(),
-                      titleWidget('My Notes'),
+                      Center(
+                        child: SearchBar(
+                          searchCallback: (s) => state.userNotes
+                              .where((element) => element.title.contains(s)),
+                        ),
+                      ),
                       _gap(),
                       notesGridView(state.isSearchActive
                           ? state.searchNotes

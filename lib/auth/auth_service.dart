@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simplynote/auth/login/cubit/login_cubit.dart';
 import 'package:simplynote/constants.dart';
 
 class AuthService {

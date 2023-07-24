@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:json_theme/json_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/login/cubit/login_cubit.dart';
@@ -20,6 +16,7 @@ import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/view/create_note.dart';
 
 import 'package:simplynote/home/view/my_home_page.dart';
+import 'package:simplynote/storage_service.dart';
 
 final goRouter = GoRouter(
   routes: [
@@ -84,6 +81,10 @@ void main() async {
 
   getIt.registerSingleton<AuthService>(authService);
   getIt.registerSingleton<SharedPreferences>(sp);
+  getIt.registerSingleton<StorageService>(
+    FirebaseStorage(),
+    instanceName: StorageOptions.firebaseDatabase.name,
+  );
 
   runApp(
     MaterialApp.router(

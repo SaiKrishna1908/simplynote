@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
@@ -6,11 +7,9 @@ import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'constants.dart';
 
 abstract class StorageService {
-  final userNotesCollection = FirebaseFirestore.instance
-      .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
   Future<void> createNote(NoteModel noteModel);
 
-  Future<void> deleteNote(String uuid);
+  Future<bool> deleteNote(String uuid);
 
   Future<NoteModel?> getNote(String uuid);
 
@@ -20,6 +19,8 @@ abstract class StorageService {
 class FirebaseStorage extends StorageService {
   @override
   Future<void> createNote(NoteModel noteModel) async {
+    final userNotesCollection = FirebaseFirestore.instance
+        .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
     assert(noteModel.uuid.isNotEmpty);
 
     final noteBookByUuid = await getNote(noteModel.uuid);
@@ -40,13 +41,28 @@ class FirebaseStorage extends StorageService {
   }
 
   @override
-  Future<void> deleteNote(String uuid) {
-    // TODO: implement deleteNote
-    throw UnimplementedError();
+  Future<bool> deleteNote(String uuid) async {
+    final userNotesCollection = FirebaseFirestore.instance
+        .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
+
+    try {
+      final doc = await getNote(uuid);
+      if (doc != null) {
+        userNotesCollection.doc(doc.firestoreId).delete();
+        return true;
+      }
+    } on FirebaseException {
+      debugPrint('Error deleting document');
+    } on Exception {
+      debugPrint('Something went wrong');
+    }
+    return false;
   }
 
   @override
   Future<NoteModel?> getNote(String uuid) async {
+    final userNotesCollection = FirebaseFirestore.instance
+        .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
     final querySnapsnot =
         await userNotesCollection.where(noteUuid, isEqualTo: uuid).get();
 
@@ -60,6 +76,8 @@ class FirebaseStorage extends StorageService {
 
   @override
   Future<List<NoteModel>> fetchAllUserNotes() async {
+    final userNotesCollection = FirebaseFirestore.instance
+        .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
     final userCollection = await userNotesCollection.get();
 
     final userDocs = userCollection.docs

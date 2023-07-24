@@ -1,7 +1,5 @@
-import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/storage_service.dart';
 
@@ -14,8 +12,14 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
         );
 
   Future<void> createNote(NoteModel noteModel, String uuid) async {
-    final StorageService storageService = FirebaseStorage();
+    await GetIt.I<StorageService>(
+            instanceName: StorageOptions.firebaseDatabase.name)
+        .createNote(noteModel);
+  }
 
-    await storageService.createNote(noteModel);
+  Future<bool> deleteNote(String uuid) async {
+    return await GetIt.I<StorageService>(
+            instanceName: StorageOptions.firebaseDatabase.name)
+        .deleteNote(uuid);
   }
 }

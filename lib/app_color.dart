@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
+  static bool darkTheme = true;
   static const appPrimaryColor = Color(0xff2a2b46);
   static const appSecondaryColor = Color(0xff1B262D);
   static const appAccentColor = Color(0xffF4F4FB);
@@ -16,9 +17,9 @@ class AppColor {
       elevation: 0,
     ),
     textTheme: const TextTheme().apply(
-      bodyColor: Colors.red,
-      displayColor: Colors.red,
-      decorationColor: Colors.red,
+      bodyColor: appSecondaryColor,
+      displayColor: appSecondaryColor,
+      decorationColor: appSecondaryColor,
     ),
     hintColor: lighten(appPrimaryColor, 0.5),
     fontFamily: 'Open-Sans',

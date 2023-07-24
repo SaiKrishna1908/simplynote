@@ -14,7 +14,7 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   late TextEditingController _textEditingController;
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -78,9 +78,13 @@ class _SearchBarState extends State<SearchBar> {
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               children: [
-                const Icon(
-                  Icons.search_rounded,
-                  size: 40,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                  child: Icon(
+                    Icons.search_rounded,
+                    size: 30,
+                    color: theme.hintColor,
+                  ),
                 ),
                 _hgap(),
                 SizedBox(

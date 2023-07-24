@@ -1,8 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/login/cubit/login_cubit.dart';
 import 'package:simplynote/main.dart';

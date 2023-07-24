@@ -17,3 +17,8 @@ class Constants {
     Color(0xff5D4037),
   ];
 }
+
+enum StorageOptions {
+  firebaseDatabase,
+  mobileDatabase,
+}

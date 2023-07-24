@@ -1,8 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
@@ -20,8 +19,9 @@ class MyHomePageCubit extends Cubit<MyHomePageState> {
     emit(MyHomePageLoading());
 
     try {
-      final storageService = FirebaseStorage();
-      final userNotes = await storageService.fetchAllUserNotes();
+      final userNotes = await GetIt.I<StorageService>(
+              instanceName: StorageOptions.firebaseDatabase.name)
+          .fetchAllUserNotes();
       emit(MyHomePageLoaded(userNotes, false, userNotes));
     } on FirebaseException catch (firebaseException) {
       emit(MyHomePageError(firebaseException.message!));

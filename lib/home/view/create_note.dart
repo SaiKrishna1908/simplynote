@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
+import 'package:simplynote/main.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateNote extends StatefulWidget {
@@ -55,10 +56,44 @@ class _CreateNoteState extends State<CreateNote> {
     super.dispose();
   }
 
+  Future<void> deleteNote() async {
+    final isDeleted =
+        await context.read<CreateNoteCubit>().deleteNote(_documentUuid);
+    goRouter.pop();
+    if (!mounted) {
+      return;
+    }
+    if (isDeleted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColor.appPrimaryColor,
+          behavior: SnackBarBehavior.floating,
+          content: const Text(
+            'Deleted Note',
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          margin: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.height - 200,
+              right: 20,
+              left: 20),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () => deleteNote(),
+            icon: const Icon(Icons.delete),
+          )
+        ],
+      ),
       body: BlocBuilder<CreateNoteCubit, CreateNoteState>(
         builder: (context, state) {
           storeFunction(NoteModel noteModel) => context
