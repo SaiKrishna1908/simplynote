@@ -117,7 +117,7 @@ class _CreateNoteState extends State<CreateNote> {
   Widget contentSection(Future<void> Function(NoteModel) callBack) {
     return Expanded(
       child: TextFormField(
-        maxLines: 100,
+        keyboardType: TextInputType.multiline,
         controller: _contentController,
         onFieldSubmitted: (value) async {
           await callBack(NoteModel(_documentUuid, _titleController.text,

@@ -17,6 +17,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool searchActive = false;
   Widget _gap() {
     return const SizedBox(
       height: 30,
@@ -167,9 +168,11 @@ class _MyHomePageState extends State<MyHomePage> {
               color: AppColor.appAccentColor,
               size: 30,
             ),
-            onPressed: () => goRouter.push('/create').then((value) async {
-              await context.read<MyHomePageCubit>().getUserNotes();
-            }),
+            onPressed: () => goRouter.push('/create').then(
+              (value) async {
+                await context.read<MyHomePageCubit>().getUserNotes();
+              },
+            ),
           ),
         ),
       ),
@@ -177,8 +180,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () => showBottomSheet(),
-              icon: const Icon(Icons.more_vert))
+            onPressed: () => setState(
+              () {
+                searchActive = !searchActive;
+              },
+            ),
+            icon: Icon(
+              searchActive ? Icons.search_off : Icons.search,
+            ),
+          ),
+          IconButton(
+            onPressed: () => showBottomSheet(),
+            icon: const Icon(Icons.more_vert),
+          ),
         ],
       ),
       body: BlocBuilder<MyHomePageCubit, MyHomePageState>(
@@ -203,12 +217,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       titleWidget('Notes'),
                       _gap(),
-                      Center(
-                        child: SearchBar(
-                          searchCallback: (s) => state.userNotes
-                              .where((element) => element.title.contains(s)),
+                      if (searchActive)
+                        Center(
+                          child: SearchBar(
+                            searchCallback: (s) => state.userNotes
+                                .where((element) => element.title.contains(s)),
+                          ),
                         ),
-                      ),
                       _gap(),
                       notesGridView(state.isSearchActive
                           ? state.searchNotes
