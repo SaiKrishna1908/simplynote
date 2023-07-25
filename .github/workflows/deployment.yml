@@ -48,4 +48,4 @@ jobs:
     - name: install firebase cli
       run: npm install -g firebase-tools
     - name: publist app to distribution
-      run: firebase appdistribution:distribute app-release.apk --app ${{secrets.FIREBASE_ANDROID_APPID}} --token ${{secrets.FIREBASE_TOKEN}} --testers "${{env.TESTERS}}"
+      run: firebase appdistribution:distribute app-release.apk --app ${{secrets.FIREBASE_ANDROID_APPID}} --token ${{secrets.FIREBASE_TOKEN}} --testers ${{env.TESTERS}}
