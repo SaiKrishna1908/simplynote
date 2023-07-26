@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/login/cubit/login_cubit.dart';
 import 'package:simplynote/main.dart';
@@ -130,7 +131,6 @@ class _LoginInViewState extends State<LoginInView> {
                       ),
                     ),
                   ),
-
                   const SizedBox(
                     height: 50,
                   ),
@@ -143,8 +143,10 @@ class _LoginInViewState extends State<LoginInView> {
                       ),
                       onPressed: () async {
                         if (isSignIn) {
-                          await context.read<LoginCubit>().signIn(
-                              nameController.text, passwordController.text);
+                          await context
+                              .read<LoginCubit>()
+                              .signInWithEmailAndPassword(
+                                  nameController.text, passwordController.text);
                         } else {
                           await context
                               .read<LoginCubit>()
@@ -165,34 +167,82 @@ class _LoginInViewState extends State<LoginInView> {
                   const SizedBox(
                     height: 10,
                   ),
+                  // InkWell(
+                  //   onTap: () => setState(() {
+                  //     isSignIn = !isSignIn;
+                  //   }),
+                  //   child: Text(
+                  //     isSignIn ? 'Create Account' : 'Sign In',
+                  //     textAlign: TextAlign.center,
+                  //     style: const TextStyle(
+                  //       fontSize: 16,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  // ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      isSignIn
+                          ? const Text('Don\'t have an account ?')
+                          : const Text('Already have an account ?'),
+                      TextButton(
+                        child: Text(
+                          isSignIn ? 'Create Account' : 'Sign In',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onPressed: () => setState(() {
+                          isSignIn = !isSignIn;
+                        }),
+                      )
+                    ],
+                  ),
                   InkWell(
-                    onTap: () => setState(() {
-                      isSignIn = !isSignIn;
-                    }),
-                    child: Text(
-                      isSignIn ? 'Create Account' : 'Sign In',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                    onTap: () async {
+                      await context.read<LoginCubit>().signInWithGoogle();
+                    },
+                    child: Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(
+                          5,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: Stack(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: const [
+                              Expanded(
+                                child: Text(
+                                  'Sign in with Google',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                            ],
+                          ),
+                          const FaIcon(
+                            FontAwesomeIcons.google,
+                            color: Colors.white,
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  // Row(
-                  //   children: <Widget>[
-                  //     const Text('Does not have account?'),
-                  //     TextButton(
-                  //       child: const Text(
-                  //         'Sign in',
-                  //         style: TextStyle(fontSize: 20),
-                  //       ),
-                  //       onPressed: () {
-                  //         //signup screen
-                  //       },
-                  //     )
-                  //   ],
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  // ),
+                  )
                 ],
               ),
             );

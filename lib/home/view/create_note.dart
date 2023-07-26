@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
@@ -27,6 +29,8 @@ class _CreateNoteState extends State<CreateNote> {
   late int _colorId;
 
   final int apiCallCronTimer = 2;
+
+  bool _showInMarkdown = false;
 
   Timer? timer;
   @override
@@ -75,9 +79,10 @@ class _CreateNoteState extends State<CreateNote> {
             borderRadius: BorderRadius.circular(15),
           ),
           margin: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height - 200,
-              right: 20,
-              left: 20),
+            bottom: MediaQuery.of(context).size.height - 200,
+            right: 20,
+            left: 20,
+          ),
         ),
       );
     }
@@ -88,10 +93,21 @@ class _CreateNoteState extends State<CreateNote> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          Constants.enableMarkDown
+              ? IconButton(
+                  onPressed: () => setState(() {
+                    _showInMarkdown = !_showInMarkdown;
+                  }),
+                  icon: FaIcon(
+                    FontAwesomeIcons.markdown,
+                    color: _showInMarkdown ? Colors.green : Colors.red,
+                  ),
+                )
+              : Container(),
           IconButton(
             onPressed: () => deleteNote(),
             icon: const Icon(Icons.delete),
-          )
+          ),
         ],
       ),
       body: BlocBuilder<CreateNoteCubit, CreateNoteState>(
@@ -115,28 +131,31 @@ class _CreateNoteState extends State<CreateNote> {
   }
 
   Widget contentSection(Future<void> Function(NoteModel) callBack) {
-    return Expanded(
-      child: TextFormField(
-        keyboardType: TextInputType.multiline,
-        controller: _contentController,
-        onFieldSubmitted: (value) async {
-          await callBack(NoteModel(_documentUuid, _titleController.text,
-              _contentController.text, null, _colorId));
-        },
-        cursorColor: AppColor.appPrimaryColor,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          hintText: 'Your Notes',
-          hintStyle: TextStyle(
-            fontSize: 20,
-          ),
-        ),
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
+    return _showInMarkdown
+        ? MarkdownBody(data: _contentController.text)
+        : Expanded(
+            child: TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              controller: _contentController,
+              onFieldSubmitted: (value) async {
+                await callBack(NoteModel(_documentUuid, _titleController.text,
+                    _contentController.text, null, _colorId));
+              },
+              cursorColor: AppColor.appPrimaryColor,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Your Notes',
+                hintStyle: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
   }
 
   Widget hline() {
@@ -149,30 +168,32 @@ class _CreateNoteState extends State<CreateNote> {
   }
 
   Widget titleSection(Future<void> Function(NoteModel) callBack) {
-    return TextFormField(
-      controller: _titleController,
-      cursorColor: AppColor.appPrimaryColor,
-      onFieldSubmitted: (value) => callBack(
-        NoteModel(_documentUuid, _titleController.text, _contentController.text,
-            null, _colorId),
-      ),
-      decoration: const InputDecoration(
-        isDense: true,
-        hintText: 'Title',
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        hintStyle: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.normal,
-        ),
-      ),
-      style: const TextStyle(
-        fontSize: 25,
-        decoration: TextDecoration.none,
-        fontWeight: FontWeight.w600,
-      ),
-      cursorHeight: 35,
-    );
+    return _showInMarkdown
+        ? MarkdownBody(data: _titleController.text)
+        : TextFormField(
+            controller: _titleController,
+            cursorColor: AppColor.appPrimaryColor,
+            onFieldSubmitted: (value) => callBack(
+              NoteModel(_documentUuid, _titleController.text,
+                  _contentController.text, null, _colorId),
+            ),
+            decoration: const InputDecoration(
+              isDense: true,
+              hintText: 'Title',
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              hintStyle: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            style: const TextStyle(
+              fontSize: 25,
+              decoration: TextDecoration.none,
+              fontWeight: FontWeight.w600,
+            ),
+            cursorHeight: 35,
+          );
   }
 }

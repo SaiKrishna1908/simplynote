@@ -16,6 +16,8 @@ class Constants {
     Color(0xff0097A7),
     Color(0xff5D4037),
   ];
+
+  static const enableMarkDown = false;
 }
 
 enum StorageOptions {

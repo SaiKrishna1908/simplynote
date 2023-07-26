@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/auth/auth_service.dart';
@@ -37,7 +39,8 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginSuccess());
   }
 
-  Future<void> signIn(String username, String password) async {
+  Future<void> signInWithEmailAndPassword(
+      String username, String password) async {
     emit(LoginLoading());
 
     try {
@@ -61,6 +64,18 @@ class LoginCubit extends Cubit<LoginState> {
     } else if (T == bool) {
       await sp.setBool(key, value as bool);
     }
+  }
+
+  Future<void> signInWithGoogle() async {
+    emit(LoginLoading());
+    try {
+      final creds = await GoogleSignIn().signIn();
+      await _setPref<String>(Constants.uid, (creds?.id)!);
+    } on PlatformException catch (pe) {
+      emit(LoginError(pe.message ?? 'Something went wrong '));
+      return;
+    }
+    emit(LoginSuccess());
   }
 
   void tryLogin() {
