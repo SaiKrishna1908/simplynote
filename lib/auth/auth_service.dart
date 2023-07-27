@@ -17,13 +17,14 @@ class AuthService {
   }
 
   Future<UserCredential> signInUser(String email, String password) async {
+    // ignore: unnecessary_await_in_return
     return await firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
   }
 
   Future<bool> isUserLoggedIn() async {
-    return (GetIt.I<SharedPreferences>().containsKey(Constants.uid) &&
-        firebaseAuth.currentUser != null);
+    return GetIt.I<SharedPreferences>().containsKey(Constants.uid) &&
+        firebaseAuth.currentUser != null;
   }
 
   Future<void> signOut() async {

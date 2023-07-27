@@ -18,7 +18,7 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
   }
 
   Future<bool> deleteNote(String uuid) async {
-    return await GetIt.I<StorageService>(
+    return GetIt.I<StorageService>(
             instanceName: StorageOptions.firebaseDatabase.name)
         .deleteNote(uuid);
   }
