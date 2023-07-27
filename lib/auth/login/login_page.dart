@@ -184,9 +184,10 @@ class _LoginInViewState extends State<LoginInView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      isSignIn
-                          ? const Text('Don\'t have an account ?')
-                          : const Text('Already have an account ?'),
+                      if (isSignIn)
+                        const Text("Don't have an account ?")
+                      else
+                        const Text('Already have an account ?'),
                       TextButton(
                         child: Text(
                           isSignIn ? 'Create Account' : 'Sign In',

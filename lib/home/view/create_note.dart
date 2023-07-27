@@ -93,17 +93,18 @@ class _CreateNoteState extends State<CreateNote> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Constants.enableMarkDown
-              ? IconButton(
-                  onPressed: () => setState(() {
-                    _showInMarkdown = !_showInMarkdown;
-                  }),
-                  icon: FaIcon(
-                    FontAwesomeIcons.markdown,
-                    color: _showInMarkdown ? Colors.green : Colors.red,
-                  ),
-                )
-              : Container(),
+          if (Constants.enableMarkDown)
+            IconButton(
+              onPressed: () => setState(() {
+                _showInMarkdown = !_showInMarkdown;
+              }),
+              icon: FaIcon(
+                FontAwesomeIcons.markdown,
+                color: _showInMarkdown ? Colors.green : Colors.red,
+              ),
+            )
+          else
+            Container(),
           IconButton(
             onPressed: () => deleteNote(),
             icon: const Icon(Icons.delete),
@@ -112,7 +113,7 @@ class _CreateNoteState extends State<CreateNote> {
       ),
       body: BlocBuilder<CreateNoteCubit, CreateNoteState>(
         builder: (context, state) {
-          storeFunction(NoteModel noteModel) => context
+          Future<void> storeFunction(NoteModel noteModel) => context
               .read<CreateNoteCubit>()
               .createNote(noteModel, _documentUuid);
           return Padding(

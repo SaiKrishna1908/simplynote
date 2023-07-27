@@ -7,15 +7,13 @@ class MyHomePageInitial extends MyHomePageState {}
 class MyHomePageLoading extends MyHomePageState {}
 
 class MyHomePageLoaded extends MyHomePageState {
+  MyHomePageLoaded(this.userNotes, this.isSearchActive, this.searchNotes);
   final List<NoteModel> userNotes;
   final bool isSearchActive;
   final List<NoteModel> searchNotes;
-
-  MyHomePageLoaded(this.userNotes, this.isSearchActive, this.searchNotes);
 }
 
 class MyHomePageError extends MyHomePageState {
-  final String message;
-
   MyHomePageError(this.message);
+  final String message;
 }

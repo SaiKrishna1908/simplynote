@@ -6,15 +6,14 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/app_color.dart';
+import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/auth/login/cubit/login_cubit.dart';
 import 'package:simplynote/auth/login/login_page.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/firebase_options.dart';
-import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/view/create_note.dart';
-
 import 'package:simplynote/home/view/my_home_page.dart';
 import 'package:simplynote/storage_service.dart';
 
@@ -46,7 +45,7 @@ final goRouter = GoRouter(
       path: '/edit/:uuid',
       name: 'edit',
       builder: (context, state) {
-        final noteModel = (state.extra as NoteModel);
+        final noteModel = state.extra as NoteModel;
         return BlocProvider(
           create: (context) {
             return CreateNoteCubit(
