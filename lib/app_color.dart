@@ -21,6 +21,8 @@ class AppColor {
       displayColor: appSecondaryColor,
       decorationColor: appSecondaryColor,
     ),
+    textSelectionTheme:
+        TextSelectionThemeData(cursorColor: darken(AppColor.appPrimaryColor)),
     hintColor: lighten(appPrimaryColor, 0.5),
     fontFamily: 'Open-Sans',
   );

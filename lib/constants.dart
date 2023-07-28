@@ -24,3 +24,5 @@ enum StorageOptions {
   firebaseDatabase,
   mobileDatabase,
 }
+
+enum NoteFlow { create, edit }

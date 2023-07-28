@@ -6,28 +6,33 @@ class CreateNoteState {
 }
 
 class NoteModel {
-  NoteModel(
-      this.uuid, this.title, this.content, this.firestoreId, this.colorId);
+  NoteModel(this.uuid, this.title, this.content, this.firestoreId, this.colorId,
+      this.titleDelta, this.contentDelta);
   final String? firestoreId;
   final String uuid;
   final String title;
   final String content;
   final int colorId;
+  final Delta titleDelta;
+  final Delta contentDelta;
 
   Map<String, dynamic> toJson() => {
         noteUuid: uuid,
         noteTitle: title,
         noteContent: content,
-        colorIdKey: colorId
+        colorIdKey: colorId,
+        titleData: titleDelta.toJson(),
+        contentData: contentDelta.toJson()
       };
 
   static NoteModel fromJson(Map<String, dynamic> json) => NoteModel(
-        json[noteUuid],
-        json[noteTitle],
-        json[noteContent],
-        json[firebaseId],
-        json[colorIdKey],
-      );
+      json[noteUuid],
+      json[noteTitle],
+      json[noteContent],
+      json[firebaseId],
+      json[colorIdKey],
+      Delta.fromJson(json[titleData]),
+      Delta.fromJson(json[contentData]));
 }
 
 const String noteUuid = 'uuid';
@@ -35,3 +40,5 @@ const String noteTitle = 'title';
 const String noteContent = 'content';
 const String firebaseId = 'firestoreId';
 const String colorIdKey = 'colorId';
+const String titleData = 'titleDelta';
+const String contentData = 'contentDelta';

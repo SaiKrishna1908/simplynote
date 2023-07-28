@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/view/create_note.dart';
 import 'package:simplynote/home/view/my_home_page.dart';
+
 import 'package:simplynote/storage_service.dart';
 
 final goRouter = GoRouter(
@@ -36,8 +38,14 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/create',
       builder: (context, state) => BlocProvider(
-        create: (context) => CreateNoteCubit(NoteModel(Constants.emptyString,
-            Constants.emptyString, Constants.emptyString, null, 1)),
+        create: (context) => CreateNoteCubit(NoteModel(
+            Constants.emptyString,
+            Constants.emptyString,
+            Constants.emptyString,
+            null,
+            1,
+            Delta(),
+            Delta())),
         child: const CreateNote(),
       ),
     ),
@@ -49,8 +57,15 @@ final goRouter = GoRouter(
         return BlocProvider(
           create: (context) {
             return CreateNoteCubit(
-              NoteModel(noteModel.uuid, noteModel.title, noteModel.content,
-                  noteModel.firestoreId, noteModel.colorId),
+              NoteModel(
+                noteModel.uuid,
+                noteModel.title,
+                noteModel.content,
+                noteModel.firestoreId,
+                noteModel.colorId,
+                noteModel.titleDelta,
+                noteModel.contentDelta,
+              ),
             );
           },
           child: CreateNote(
@@ -58,10 +73,13 @@ final goRouter = GoRouter(
             content: noteModel.content,
             colorId: noteModel.colorId,
             documentId: noteModel.uuid,
+            titleDelta: noteModel.titleDelta,
+            contentDelta: noteModel.contentDelta,
+            noteFlow: NoteFlow.edit,
           ),
         );
       },
-    )
+    ),
   ],
 );
 

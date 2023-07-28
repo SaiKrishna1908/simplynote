@@ -40,7 +40,6 @@ dependencies:
   cloud_firestore: ^4.8.3
   uuid: ^3.0.7
   font_awesome_flutter: ^10.4.0
-  flutter_markdown: ^0.6.15
   flutter_native_splash: ^2.2.18
   flutter_quill: 5.2.0
 

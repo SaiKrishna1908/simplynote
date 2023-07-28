@@ -13,31 +13,51 @@ abstract class StorageService {
 
   Future<NoteModel?> getNote(String uuid);
 
+  Future<String?> getNotebookIdByUuid(String uuid);
+
   Future<List<NoteModel>> fetchAllUserNotes();
 }
 
 class FirebaseStorage extends StorageService {
   @override
   Future<void> createNote(NoteModel noteModel) async {
-    final userNotesCollection = FirebaseFirestore.instance
-        .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
     assert(noteModel.uuid.isNotEmpty);
 
-    final noteBookByUuid = await getNote(noteModel.uuid);
+    final firebaseDocumentId = await getNotebookIdByUuid(noteModel.uuid);
 
-    if (noteBookByUuid != null) {
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      await createOrUpdateNotebook(
+          noteModel.uuid, noteModel.toJson(), firebaseDocumentId);
+    });
+  }
+
+  Future<void> createOrUpdateNotebook(String noteBookByUuid,
+      Map<String, dynamic> json, String? firestoreId) async {
+    final userNotesCollection = FirebaseFirestore.instance
+        .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
+    if (firestoreId != null) {
       FirebaseFirestore.instance.runTransaction((transaction) async {
-        await userNotesCollection
-            .doc(noteBookByUuid.firestoreId)
-            .update(noteModel.toJson());
+        await userNotesCollection.doc(firestoreId).update(json);
       });
     } else {
       FirebaseFirestore.instance.runTransaction((transaction) async {
-        await userNotesCollection.add(
-          noteModel.toJson(),
-        );
+        await userNotesCollection.add(json);
       });
     }
+  }
+
+  @override
+  Future<String?> getNotebookIdByUuid(String uuid) async {
+    final userNotesCollection = FirebaseFirestore.instance
+        .collection(GetIt.I<SharedPreferences>().getString(Constants.uid)!);
+    final querySnapsnot =
+        await userNotesCollection.where(noteUuid, isEqualTo: uuid).get();
+
+    if (querySnapsnot.docs.isNotEmpty) {
+      return querySnapsnot.docs.first.id;
+    }
+
+    return null;
   }
 
   @override
