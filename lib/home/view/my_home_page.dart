@@ -67,6 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget notesStaggeredView(List<NoteModel> notes) {
+    notes.sort(
+      (a, b) => b.lastAccessedEpoch - a.lastAccessedEpoch,
+    );
     return StaggeredGrid.count(
       crossAxisCount: 2,
       crossAxisSpacing: 10,
@@ -111,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .then((value) => context.read<MyHomePageCubit>().getUserNotes()),
       child: Container(
         constraints: const BoxConstraints(
-          maxHeight: 150,
+          maxHeight: 120,
           minHeight: 80,
           minWidth: 80,
           maxWidth: 80,
@@ -119,18 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
         decoration: BoxDecoration(
           color: cardColor,
           borderRadius: BorderRadius.circular(20),
-
-          // Uncomment to enable border along cards
-          border: Border.all(width: 0.8),
-          boxShadow: [
-            BoxShadow(
-              color: AppColor.darken(
-                cardColor,
-              ),
-              // blurRadius: 0.1,
-              // spreadRadius: 0.1,
-            ),
-          ],
+          border: Border.all(width: 0.3),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -254,10 +246,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           } else if (state is MyHomePageLoaded) {
-            return SingleChildScrollView(
-              child: RefreshIndicator(
-                onRefresh: () => context.read<MyHomePageCubit>().getUserNotes(),
-                child: Padding(
+            return RefreshIndicator(
+              onRefresh: () async {
+                await context.read<MyHomePageCubit>().getUserNotes();
+              },
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: 1,
+                itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,9 +269,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       _gap(),
-                      notesStaggeredView(state.isSearchActive
-                          ? state.searchNotes
-                          : state.userNotes),
+                      notesStaggeredView(
+                        state.isSearchActive
+                            ? state.searchNotes
+                            : state.userNotes,
+                      ),
                     ],
                   ),
                 ),

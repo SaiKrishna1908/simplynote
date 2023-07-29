@@ -49,16 +49,16 @@ class _CreateNoteState extends State<CreateNote> {
 
   Widget _buildSimpleNoteToolbar() {
     return quill.QuillToolbar.basic(
+      toolbarIconAlignment: WrapAlignment.spaceBetween,
       controller: _titleFocusNode.hasPrimaryFocus
           ? _titleController
           : _contentController,
       showFontFamily: false,
       showClearFormat: false,
-      showStrikeThrough: false,
       showInlineCode: false,
       showImageButton: false,
       showVideoButton: false,
-      showFontSize: false,
+      showHeaderStyle: false,
       showLink: false,
       showJustifyAlignment: false,
       showUnderLineButton: false,
@@ -69,6 +69,7 @@ class _CreateNoteState extends State<CreateNote> {
       showQuote: false,
       showIndent: false,
       multiRowsDisplay: false,
+      showBackgroundColorButton: false,
       iconTheme: const quill.QuillIconTheme(borderRadius: 10),
       dialogTheme: quill.QuillDialogTheme(
         dialogBackgroundColor: AppColor.appAccentColor,
@@ -108,32 +109,41 @@ class _CreateNoteState extends State<CreateNote> {
   void initState() {
     super.initState();
 
-    _titleController = widget.titleDelta == null
-        ? quill.QuillController.basic()
-        : quill.QuillController(
-            document: quill.Document.fromDelta(widget.titleDelta!),
-            selection: const TextSelection.collapsed(
-              offset: 0,
-            ),
-          );
+    if (widget.titleDelta == null) {
+      _titleController = quill.QuillController.basic();
+    } else {
+      final titleDocument = quill.Document.fromDelta(widget.titleDelta!);
+      _titleController = quill.QuillController(
+        document: titleDocument,
+        selection: TextSelection.collapsed(
+          offset: titleDocument.root.last.length - 1,
+        ),
+      );
+    }
+
     _contentController = widget.contentDelta == null
         ? quill.QuillController.basic()
         : quill.QuillController(
             document: quill.Document.fromDelta(widget.contentDelta!),
-            selection: const TextSelection.collapsed(offset: 0));
+            selection: const TextSelection.collapsed(offset: 0),
+          );
     _documentUuid = widget.documentId ?? const Uuid().v4();
     _colorId = widget.colorId ??
         Random().nextInt(
           Constants.noteColors.length,
         );
 
-    _titleFocusNode.addListener(() {
-      setState(() {});
-    });
+    _titleFocusNode.addListener(
+      () {
+        setState(() {});
+      },
+    );
 
-    _contentFocusNode.addListener(() {
-      setState(() {});
-    });
+    _contentFocusNode.addListener(
+      () {
+        setState(() {});
+      },
+    );
     timer = Timer.periodic(
       Duration(seconds: apiCallCronTimer),
       (timer) async {
@@ -171,6 +181,11 @@ class _CreateNoteState extends State<CreateNote> {
     if (isDeleted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          action: SnackBarAction(
+            label: 'Dismiss',
+            onPressed: () {},
+            textColor: AppColor.appAccentColor,
+          ),
           backgroundColor: AppColor.appPrimaryColor,
           behavior: SnackBarBehavior.floating,
           content: const Text(
