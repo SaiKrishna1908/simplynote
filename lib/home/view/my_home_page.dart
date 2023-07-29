@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get_it/get_it.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/auth_service.dart';
@@ -38,6 +41,54 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  double getHeightForText(String content) {
+    /*
+      min height = 80
+      max height = 150
+    */
+    // final textPainter = TextPainter(text: TextSpan(text: content));
+    // debugPrint(textPainter.height.toString());
+    final textLines = '\n'.allMatches(content).length + 1;
+
+    if (textLines == 0) {
+      return 1;
+    }
+
+    const maxLines = 10;
+    const minLines = 1;
+
+    const minHeight = 1;
+    const maxHeight = 2;
+
+    return minHeight +
+        (maxHeight - minHeight) /
+            (maxLines - minLines) *
+            (min(textLines, maxLines) - minLines);
+  }
+
+  Widget notesStaggeredView(List<NoteModel> notes) {
+    return StaggeredGrid.count(
+      crossAxisCount: 2,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      children: [
+        ...List.generate(
+          notes.length,
+          (index) => StaggeredGridTile.count(
+            // height
+            mainAxisCellCount: getHeightForText(
+              notes[index].content,
+            ),
+            crossAxisCellCount: 1,
+            child: noteWidget(
+              notes[index],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   Widget notesGridView(List<NoteModel> notes) {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
@@ -58,64 +109,61 @@ class _MyHomePageState extends State<MyHomePage> {
       onTap: () => goRouter
           .push('/edit/${noteModel.uuid}', extra: noteModel)
           .then((value) => context.read<MyHomePageCubit>().getUserNotes()),
-      child: SizedBox(
-        height: 80,
-        width: 80,
-        child: Container(
-          decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(20),
-            // Uncomment to enable border along cards
-            // border: Border.all(width: 2),
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: AppColor.darken(
-            //       cardColor,
-            //       0.8,
-            //     ),
-            //     blurRadius: 1,
-            //     spreadRadius: 1,
-            //   ),
-            // ],
-          ),
-          // elevation: 15,
-          // borderOnForeground: true,
-          // shadowColor: AppColor.darken(cardColor, 0.9),
+      child: Container(
+        constraints: const BoxConstraints(
+          maxHeight: 150,
+          minHeight: 80,
+          minWidth: 80,
+          maxWidth: 80,
+        ),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(20),
 
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 20,
+          // Uncomment to enable border along cards
+          border: Border.all(width: 0.8),
+          boxShadow: [
+            BoxShadow(
+              color: AppColor.darken(
+                cardColor,
+              ),
+              // blurRadius: 0.1,
+              // spreadRadius: 0.1,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  noteModel.title,
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                noteModel.title,
+                style: const TextStyle(
+                  color: AppColor.appAccentColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+              ),
+              _gap(),
+              Expanded(
+                child: Text(
+                  noteModel.content,
                   style: const TextStyle(
                     color: AppColor.appAccentColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    // overflow: TextOverflow.fade,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    wordSpacing: 0.5,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
                 ),
-                _gap(),
-                Expanded(
-                  child: Text(
-                    noteModel.content,
-                    maxLines: 100,
-                    style: const TextStyle(
-                      color: AppColor.appAccentColor,
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      wordSpacing: 0.5,
-                    ),
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
         ),
       ),
@@ -224,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       _gap(),
-                      notesGridView(state.isSearchActive
+                      notesStaggeredView(state.isSearchActive
                           ? state.searchNotes
                           : state.userNotes),
                     ],

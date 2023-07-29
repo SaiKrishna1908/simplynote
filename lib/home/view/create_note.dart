@@ -107,18 +107,25 @@ class _CreateNoteState extends State<CreateNote> {
   @override
   void initState() {
     super.initState();
+
     _titleController = widget.titleDelta == null
         ? quill.QuillController.basic()
         : quill.QuillController(
             document: quill.Document.fromDelta(widget.titleDelta!),
-            selection: const TextSelection.collapsed(offset: 0));
+            selection: const TextSelection.collapsed(
+              offset: 0,
+            ),
+          );
     _contentController = widget.contentDelta == null
         ? quill.QuillController.basic()
         : quill.QuillController(
             document: quill.Document.fromDelta(widget.contentDelta!),
             selection: const TextSelection.collapsed(offset: 0));
     _documentUuid = widget.documentId ?? const Uuid().v4();
-    _colorId = widget.colorId ?? Random().nextInt(Constants.noteColors.length);
+    _colorId = widget.colorId ??
+        Random().nextInt(
+          Constants.noteColors.length,
+        );
 
     _titleFocusNode.addListener(() {
       setState(() {});
@@ -182,17 +189,18 @@ class _CreateNoteState extends State<CreateNote> {
     }
   }
 
+  final pageBodyLighthenFactor = 0.3;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // backgroundColor: AppColor.lighten(
+        //     Constants.noteColors[_colorId], pageBodyLighthenFactor),
         title: Text(
           widget.noteFlow == NoteFlow.create ? 'Create Note' : 'Edit Note',
-          style: TextStyle(
-            color: AppColor.lighten(
-              AppColor.appPrimaryColor,
-              0.2,
-            ),
+          style: const TextStyle(
+            color: AppColor.appSecondaryColor,
           ),
         ),
         actions: [

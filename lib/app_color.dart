@@ -17,9 +17,9 @@ class AppColor {
       elevation: 0,
     ),
     textTheme: const TextTheme().apply(
-      bodyColor: appSecondaryColor,
-      displayColor: appSecondaryColor,
-      decorationColor: appSecondaryColor,
+      bodyColor: appAccentColor,
+      displayColor: appAccentColor,
+      decorationColor: appAccentColor,
     ),
     textSelectionTheme:
         TextSelectionThemeData(cursorColor: darken(AppColor.appPrimaryColor)),
