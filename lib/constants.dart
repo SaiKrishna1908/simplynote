@@ -22,7 +22,7 @@ class Constants {
 
 enum StorageOptions {
   firebaseDatabase,
-  mobileDatabase,
+  hiveDatabase,
 }
 
 enum NoteFlow { create, edit }
