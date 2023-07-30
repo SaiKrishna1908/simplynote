@@ -53,6 +53,18 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginSuccess());
   }
 
+  Future<void> signInWithGoogle() async {
+    emit(LoginLoading());
+    try {
+      final creds = await GoogleSignIn().signIn();
+      await _setPref<String>(Constants.uid, (creds?.id)!);
+    } on PlatformException catch (pe) {
+      emit(LoginError(pe.message ?? 'Something went wrong '));
+      return;
+    }
+    emit(LoginSuccess());
+  }
+
   Future<void> _setPref<T>(String key, T value) async {
     final sp = GetIt.I<SharedPreferences>();
     if (T == String) {
@@ -64,18 +76,6 @@ class LoginCubit extends Cubit<LoginState> {
     } else if (T == bool) {
       await sp.setBool(key, value as bool);
     }
-  }
-
-  Future<void> signInWithGoogle() async {
-    emit(LoginLoading());
-    try {
-      final creds = await GoogleSignIn().signIn();
-      await _setPref<String>(Constants.uid, (creds?.id)!);
-    } on PlatformException catch (pe) {
-      emit(LoginError(pe.message ?? 'Something went wrong '));
-      return;
-    }
-    emit(LoginSuccess());
   }
 
   void tryLogin() {

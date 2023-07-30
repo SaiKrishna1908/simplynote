@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/constants.dart';
 
@@ -24,11 +25,15 @@ class AuthService {
 
   Future<bool> isUserLoggedIn() async {
     return GetIt.I<SharedPreferences>().containsKey(Constants.uid) &&
-        firebaseAuth.currentUser != null;
+        (firebaseAuth.currentUser != null || await GoogleSignIn().isSignedIn());
   }
 
   Future<void> signOut() async {
     await GetIt.I<SharedPreferences>().clear();
     await firebaseAuth.signOut();
+
+    if (await GoogleSignIn().isSignedIn()) {
+      await GoogleSignIn().signOut();
+    }
   }
 }

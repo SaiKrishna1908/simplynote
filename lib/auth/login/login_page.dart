@@ -16,6 +16,16 @@ class _LoginInViewState extends State<LoginInView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<void> _showAlertDialog(
       BuildContext context, String errorMessage) async {
     await showDialog(

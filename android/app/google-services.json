@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "613004691728-psg1unj6hk4plq21kr5sg5uiqse016v6.apps.googleusercontent.com",
+          "client_id": "613004691728-lgvgc8skk3it3hacvck2cqkhji2bftjs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.krishna.simplynote",
+            "certificate_hash": "00c7bf3bb0b9f58c7c008aa232134b03a6cc0a6d"
+          }
+        },
+        {
+          "client_id": "613004691728-15mj4do13452a9t9tn5uts8dj7vrlfsi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +35,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "613004691728-psg1unj6hk4plq21kr5sg5uiqse016v6.apps.googleusercontent.com",
+              "client_id": "613004691728-15mj4do13452a9t9tn5uts8dj7vrlfsi.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "613004691728-a8ovo3dgn824puqkt1um8b3bk063vseh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.krishna.simplynote"
+              }
             }
           ]
         }
