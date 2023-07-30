@@ -11,6 +11,7 @@ import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/model/note.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
+import 'package:simplynote/storage_service.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -167,11 +168,49 @@ class _MyHomePageState extends State<MyHomePage> {
     goRouter.go('/');
   }
 
+  Future<void> sync() async {
+    await StorageService.sync(
+      GetIt.I<StorageService>(
+          instanceName: StorageOptions.firebaseDatabase.name),
+      GetIt.I<StorageService>(
+        instanceName: StorageOptions.hiveDatabase.name,
+      ),
+    );
+    if (!mounted) {
+      return;
+    }
+    Navigator.of(context).pop();
+  }
+
   Future<void> showBottomSheet() async {
     await showModalBottomSheet(
       context: context,
-      builder: (context) => Wrap(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          ListTile(
+            style: ListTileStyle.list,
+            iconColor: AppColor.appSecondaryColor,
+            dense: false,
+            leading: const Icon(Icons.sync),
+            title: const Text(
+              'Sync',
+              style: TextStyle(
+                color: AppColor.appSecondaryColor,
+                fontSize: 18,
+              ),
+            ),
+            onTap: () => sync(),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
             child: ListTile(
@@ -188,7 +227,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onTap: () => signOut(),
             ),
-          )
+          ),
+          const SizedBox(
+            height: 5,
+          ),
         ],
       ),
     );
