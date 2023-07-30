@@ -7,8 +7,8 @@ import 'package:get_it/get_it.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/constants.dart';
-import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
+import 'package:simplynote/home/model/note.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
 
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget noteWidget(NoteModel noteModel) {
-    final cardColor = Constants.noteColors[noteModel.colorId];
+    final cardColor = Constants.noteColors[noteModel.colorId].withOpacity(0.8);
     return InkWell(
       onTap: () => goRouter
           .push('/edit/${noteModel.uuid}', extra: noteModel)
@@ -135,9 +135,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 noteModel.title,
                 style: const TextStyle(
-                  color: AppColor.appAccentColor,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontSize: 16,
                 ),
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
@@ -146,8 +146,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                 child: Text(
                   noteModel.content,
-                  style: const TextStyle(
-                    color: AppColor.appAccentColor,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
                     // overflow: TextOverflow.fade,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,

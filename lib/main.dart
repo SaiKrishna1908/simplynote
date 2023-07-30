@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/auth_service.dart';
@@ -14,6 +15,7 @@ import 'package:simplynote/constants.dart';
 import 'package:simplynote/firebase_options.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
+import 'package:simplynote/home/model/note.dart';
 import 'package:simplynote/home/view/create_note.dart';
 import 'package:simplynote/home/view/my_home_page.dart';
 
@@ -38,14 +40,19 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/create',
       builder: (context, state) => BlocProvider(
-        create: (context) => CreateNoteCubit(NoteModel(
+        create: (context) => CreateNoteCubit(
+          NoteModel(
             Constants.emptyString,
             Constants.emptyString,
             Constants.emptyString,
             null,
             1,
-            Delta(),
-            Delta())),
+            [],
+            [],
+            DateTime.now().millisecondsSinceEpoch,
+            false,
+          ),
+        ),
         child: const CreateNote(),
       ),
     ),
@@ -63,8 +70,10 @@ final goRouter = GoRouter(
                 noteModel.content,
                 noteModel.firestoreId,
                 noteModel.colorId,
-                noteModel.titleDelta,
-                noteModel.contentDelta,
+                noteModel.titleDeltaMap,
+                noteModel.contentDeltaMap,
+                noteModel.lastAccessedEpoch,
+                noteModel.isDeleted,
               ),
             );
           },
@@ -73,8 +82,8 @@ final goRouter = GoRouter(
             content: noteModel.content,
             colorId: noteModel.colorId,
             documentId: noteModel.uuid,
-            titleDelta: noteModel.titleDelta,
-            contentDelta: noteModel.contentDelta,
+            titleDelta: Delta.fromJson(noteModel.titleDeltaMap),
+            contentDelta: Delta.fromJson(noteModel.contentDeltaMap),
             noteFlow: NoteFlow.edit,
           ),
         );
@@ -96,11 +105,25 @@ void main() async {
 
   final sp = await SharedPreferences.getInstance();
 
+  await Hive.initFlutter();
+  Hive.registerAdapter(NoteModelAdapter());
+  final notesBox = await Hive.openBox<NoteModel>('notes');
+
   getIt.registerSingleton<AuthService>(authService);
   getIt.registerSingleton<SharedPreferences>(sp);
   getIt.registerSingleton<StorageService>(
     FirebaseStorage(),
     instanceName: StorageOptions.firebaseDatabase.name,
+  );
+  getIt.registerSingleton<StorageService>(HiveStorage(),
+      instanceName: StorageOptions.hiveDatabase.name);
+  getIt.registerSingleton<Box<NoteModel>>(notesBox);
+
+  StorageService.sync(
+    GetIt.I<StorageService>(instanceName: StorageOptions.firebaseDatabase.name),
+    GetIt.I<StorageService>(
+      instanceName: StorageOptions.hiveDatabase.name,
+    ),
   );
 
   runApp(

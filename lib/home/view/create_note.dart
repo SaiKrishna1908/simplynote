@@ -7,6 +7,7 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
+import 'package:simplynote/home/model/note.dart';
 import 'package:simplynote/main.dart';
 import 'package:uuid/uuid.dart';
 
@@ -41,7 +42,7 @@ class _CreateNoteState extends State<CreateNote> {
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
 
-  final int apiCallCronTimer = 2;
+  final int apiCallCronTimer = 1;
 
   Timer? timer;
 
@@ -151,13 +152,16 @@ class _CreateNoteState extends State<CreateNote> {
             !_contentController.document.isEmpty()) {
           context.read<CreateNoteCubit>().createNote(
                 NoteModel(
-                    _documentUuid,
-                    _titleController.document.toPlainText(),
-                    _contentController.document.toPlainText(),
-                    null,
-                    _colorId,
-                    _titleController.document.toDelta(),
-                    _contentController.document.toDelta()),
+                  _documentUuid,
+                  _titleController.document.toPlainText(),
+                  _contentController.document.toPlainText(),
+                  null,
+                  _colorId,
+                  _titleController.document.toDelta().toJson(),
+                  _contentController.document.toDelta().toJson(),
+                  DateTime.now().millisecondsSinceEpoch,
+                  false,
+                ),
                 _documentUuid,
               );
         }

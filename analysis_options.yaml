@@ -84,8 +84,7 @@ linter:
     - conditional_uri_does_not_exist
     # - constant_identifier_names # needs an opt-out https://github.com/dart-lang/linter/issues/204
     - control_flow_in_finally
-    - curly_braces_in_flow_control_structures    
-    - depend_on_referenced_packages
+    - curly_braces_in_flow_control_structures        
     - deprecated_consistency
     # - deprecated_member_use_from_same_package # we allow self-references to deprecated members
     # - diagnostic_describe_all_properties # enabled only at the framework level (packages/flutter/lib)

@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/constants.dart';
-import 'package:simplynote/home/cubit/create_note_cubit.dart';
+import 'package:simplynote/home/model/note.dart';
 import 'package:simplynote/storage_service.dart';
 
 part 'my_home_page_state.dart';
@@ -20,7 +20,7 @@ class MyHomePageCubit extends Cubit<MyHomePageState> {
 
     try {
       final userNotes = await GetIt.I<StorageService>(
-              instanceName: StorageOptions.firebaseDatabase.name)
+              instanceName: StorageOptions.hiveDatabase.name)
           .fetchAllUserNotes();
       emit(MyHomePageLoaded(userNotes, false, userNotes));
     } on FirebaseException catch (firebaseException) {
