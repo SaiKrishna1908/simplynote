@@ -54,10 +54,12 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> signInWithGoogle() async {
-    emit(LoginLoading());
     try {
       final creds = await GoogleSignIn().signIn();
-      await _setPref<String>(Constants.uid, (creds?.id)!);
+      final idToken = (await creds!.authentication).idToken;
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+          GoogleAuthProvider.credential(idToken: idToken));
+      await _setPref<String>(Constants.uid, userCredential.user!.uid);
     } on PlatformException catch (pe) {
       emit(LoginError(pe.message ?? 'Something went wrong '));
       return;
