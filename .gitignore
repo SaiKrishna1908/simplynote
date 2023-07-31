@@ -42,3 +42,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+testers.txt
+release.txt
+publish-to-firebase.sh
