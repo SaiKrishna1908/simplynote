@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -20,6 +23,8 @@ import 'package:simplynote/home/view/create_note.dart';
 import 'package:simplynote/home/view/my_home_page.dart';
 
 import 'package:simplynote/storage_service.dart';
+import 'package:uuid/uuid.dart';
+import 'package:workmanager/workmanager.dart';
 
 final goRouter = GoRouter(
   routes: [
@@ -92,6 +97,38 @@ final goRouter = GoRouter(
   ],
 );
 
+/*
+
+  Does not work for IOS, TODO configure for iOS
+
+@pragma('vm:entry-point')
+Future<void> callbackDispatcher() async {
+  final authService = GetIt.I<AuthService>();
+  Workmanager().executeTask(
+    (task, inputData) async {
+      if (await authService.isUserLoggedIn()) {
+        try {
+          await StorageService.sync(
+            GetIt.I<StorageService>(
+                instanceName: StorageOptions.firebaseDatabase.name),
+            GetIt.I<StorageService>(
+              instanceName: StorageOptions.hiveDatabase.name,
+            ),
+          );
+        } on Exception catch (e) {
+          log(e.toString());
+          return Future.value(false);
+        }
+      } else {
+        debugPrint('Cannot sync, no logged in user');
+      }
+      return Future.value(true);
+    },
+  );
+}
+
+*/
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final firebaseApp = await Firebase.initializeApp(
@@ -119,12 +156,14 @@ void main() async {
       instanceName: StorageOptions.hiveDatabase.name);
   getIt.registerSingleton<Box<NoteModel>>(notesBox);
 
-  StorageService.sync(
-    GetIt.I<StorageService>(instanceName: StorageOptions.firebaseDatabase.name),
-    GetIt.I<StorageService>(
-      instanceName: StorageOptions.hiveDatabase.name,
-    ),
-  );
+  // Workmanager().initialize(callbackDispatcher, isInDebugMode: !kReleaseMode);
+
+  // Workmanager().registerPeriodicTask(
+  //   backoffPolicy: BackoffPolicy.linear,
+  //   const Uuid().v4(),
+  //   'task_sync',
+  //   frequency: const Duration(minutes: 15),
+  // );
 
   runApp(
     MaterialApp.router(
