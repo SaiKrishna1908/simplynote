@@ -48,7 +48,7 @@ class _LoginInViewState extends State<LoginInView> {
     );
   }
 
-  bool isSignIn = false;
+  bool isSignIn = true;
 
   @override
   Widget build(BuildContext context) {
@@ -102,11 +102,17 @@ class _LoginInViewState extends State<LoginInView> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextField(
+                      style: const TextStyle(
+                        color: AppColor.appPrimaryColor,
+                      ),
                       controller: nameController,
                       decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: AppColor.appPrimaryColor)),
                         border: const OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: AppColor.appSecondaryColor),
+                              BorderSide(color: AppColor.appPrimaryColor),
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderSide:
@@ -124,12 +130,19 @@ class _LoginInViewState extends State<LoginInView> {
                     ),
                   ),
                   TextField(
+                    style: const TextStyle(
+                      color: AppColor.appPrimaryColor,
+                    ),
                     obscureText: true,
                     controller: passwordController,
                     decoration: InputDecoration(
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: AppColor.appPrimaryColor)),
                       border: const OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: AppColor.appSecondaryColor),
+                        borderSide: BorderSide(
+                          color: AppColor.appPrimaryColor,
+                        ),
                       ),
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: AppColor.appPrimaryColor),
@@ -195,9 +208,19 @@ class _LoginInViewState extends State<LoginInView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       if (isSignIn)
-                        const Text("Don't have an account ?")
+                        const Text(
+                          "Don't have an account ?",
+                          style: TextStyle(
+                            color: AppColor.appPrimaryColor,
+                          ),
+                        )
                       else
-                        const Text('Already have an account ?'),
+                        const Text(
+                          'Already have an account ?',
+                          style: TextStyle(
+                            color: AppColor.appPrimaryColor,
+                          ),
+                        ),
                       TextButton(
                         child: Text(
                           isSignIn ? 'Create Account' : 'Sign In',
@@ -221,7 +244,7 @@ class _LoginInViewState extends State<LoginInView> {
                       height: 50,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: Colors.red.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(
                           5,
                         ),

@@ -28,17 +28,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget titleWidget(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
+  Widget titleWidget(String title, int count) {
+    return RichText(
+      text: const TextSpan(
+        children: [
+          TextSpan(
+            text: 'Notes\n',
+          ),
+        ],
+        style: TextStyle(
           fontWeight: FontWeight.w400,
           color: AppColor.appPrimaryColor,
-          fontSize: 30,
+          fontSize: 32,
           letterSpacing: 0,
           wordSpacing: 0,
-          fontFamily: 'Brandon'),
-      textAlign: TextAlign.center,
+          fontFamily: 'Brandon',
+        ),
+      ),
     );
   }
 
@@ -123,7 +129,6 @@ class _MyHomePageState extends State<MyHomePage> {
         decoration: BoxDecoration(
           color: cardColor,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(width: 0.3),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -149,8 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   noteModel.content,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
-                    // overflow: TextOverflow.fade,
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: FontWeight.w500,
                     wordSpacing: 0.5,
                   ),
@@ -196,13 +200,13 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           ListTile(
             style: ListTileStyle.list,
-            iconColor: AppColor.appSecondaryColor,
+            iconColor: AppColor.appPrimaryColor,
             dense: false,
             leading: const Icon(Icons.sync),
             title: const Text(
               'Sync',
               style: TextStyle(
-                color: AppColor.appSecondaryColor,
+                color: AppColor.appPrimaryColor,
                 fontSize: 18,
               ),
             ),
@@ -215,13 +219,13 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
             child: ListTile(
               style: ListTileStyle.list,
-              iconColor: AppColor.appSecondaryColor,
+              iconColor: AppColor.appPrimaryColor,
               dense: false,
               leading: const Icon(Icons.logout),
               title: const Text(
                 'Logout',
                 style: TextStyle(
-                  color: AppColor.appSecondaryColor,
+                  color: AppColor.appPrimaryColor,
                   fontSize: 18,
                 ),
               ),
@@ -247,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: IconButton(
             icon: const Icon(
               Icons.add,
-              color: AppColor.appAccentColor,
+              color: AppColor.appPrimaryColor,
               size: 30,
             ),
             onPressed: () => goRouter.push('/create').then(
@@ -301,7 +305,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      titleWidget('Notes'),
+                      titleWidget(
+                        'Notes',
+                        state.searchNotes.length,
+                      ),
                       _gap(),
                       if (searchActive)
                         Center(

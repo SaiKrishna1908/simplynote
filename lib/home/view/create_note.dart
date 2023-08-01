@@ -8,7 +8,9 @@ import 'package:simplynote/app_color.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/model/note.dart';
+
 import 'package:simplynote/main.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateNote extends StatefulWidget {
@@ -55,6 +57,7 @@ class _CreateNoteState extends State<CreateNote> {
           ? _titleController
           : _contentController,
       showFontFamily: false,
+      showFontSize: false,
       showClearFormat: false,
       showInlineCode: false,
       showImageButton: false,
@@ -71,10 +74,11 @@ class _CreateNoteState extends State<CreateNote> {
       showIndent: false,
       multiRowsDisplay: false,
       showBackgroundColorButton: false,
-      iconTheme: const quill.QuillIconTheme(borderRadius: 10),
-      dialogTheme: quill.QuillDialogTheme(
-        dialogBackgroundColor: AppColor.appAccentColor,
-      ),
+      iconTheme: const quill.QuillIconTheme(
+          borderRadius: 10,
+          iconUnselectedColor: AppColor.appPrimaryColor,
+          disabledIconColor: AppColor.appPrimaryColor,
+          iconSelectedFillColor: AppColor.appPrimaryColor),
     );
   }
 
@@ -88,7 +92,27 @@ class _CreateNoteState extends State<CreateNote> {
       padding: EdgeInsets.zero,
       readOnly: false,
       scrollable: false,
-      placeholder: 'Give your note a title',
+      placeholder: 'Title',
+      customStyles: quill.DefaultStyles(
+        placeHolder: null,
+        lists: quill.DefaultListBlockStyle(
+          const TextStyle(color: AppColor.appPrimaryColor),
+          Tuple2.fromList([.2, .2]),
+          Tuple2.fromList([.2, .2]),
+          null,
+          null,
+        ),
+        paragraph: quill.DefaultTextBlockStyle(
+          const TextStyle(
+            fontSize: 26,
+            color: AppColor.appPrimaryColor,
+            fontWeight: FontWeight.w400,
+          ),
+          Tuple2.fromList([.2, .2]),
+          Tuple2.fromList([.2, .2]),
+          null,
+        ),
+      ),
     );
   }
 
@@ -103,6 +127,17 @@ class _CreateNoteState extends State<CreateNote> {
       readOnly: false,
       scrollable: true,
       placeholder: 'Your Notes',
+      customStyles: quill.DefaultStyles(
+          paragraph: quill.DefaultTextBlockStyle(
+        const TextStyle(
+          fontSize: 18,
+          color: AppColor.appPrimaryColor,
+          fontWeight: FontWeight.w400,
+        ),
+        Tuple2.fromList([.2, .2]),
+        Tuple2.fromList([.2, .2]),
+        null,
+      )),
     );
   }
 
@@ -148,23 +183,20 @@ class _CreateNoteState extends State<CreateNote> {
     timer = Timer.periodic(
       Duration(seconds: apiCallCronTimer),
       (timer) async {
-        if (!_titleController.document.isEmpty() ||
-            !_contentController.document.isEmpty()) {
-          context.read<CreateNoteCubit>().createNote(
-                NoteModel(
-                  _documentUuid,
-                  _titleController.document.toPlainText(),
-                  _contentController.document.toPlainText(),
-                  null,
-                  _colorId,
-                  _titleController.document.toDelta().toJson(),
-                  _contentController.document.toDelta().toJson(),
-                  DateTime.now().millisecondsSinceEpoch,
-                  false,
-                ),
+        context.read<CreateNoteCubit>().createNote(
+              NoteModel(
                 _documentUuid,
-              );
-        }
+                _titleController.document.toPlainText(),
+                _contentController.document.toPlainText(),
+                null,
+                _colorId,
+                _titleController.document.toDelta().toJson(),
+                _contentController.document.toDelta().toJson(),
+                DateTime.now().millisecondsSinceEpoch,
+                false,
+              ),
+              _documentUuid,
+            );
       },
     );
   }
@@ -219,7 +251,7 @@ class _CreateNoteState extends State<CreateNote> {
         title: Text(
           widget.noteFlow == NoteFlow.create ? 'Create Note' : 'Edit Note',
           style: const TextStyle(
-            color: AppColor.appSecondaryColor,
+            color: AppColor.appPrimaryColor,
           ),
         ),
         actions: [

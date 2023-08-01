@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 class AppColor {
   static bool darkTheme = true;
-  static const appPrimaryColor = Color(0xff2a2b46);
+  // static const appPrimaryColor = Color(0xff2a2b46);
+  // static const appSecondaryColor = Color(0xff1B262D);
+  // static const appAccentColor = Color(0xffF4F4FB);
+
+  static const appPrimaryColor = Color(0xffF4F4FB);
   static const appSecondaryColor = Color(0xff1B262D);
-  static const appAccentColor = Color(0xffF4F4FB);
+  static const appAccentColor = Color(0xff2a2b46);
+
   static final lightMode = ThemeData(
     primaryColor: appPrimaryColor,
     canvasColor: appAccentColor,
