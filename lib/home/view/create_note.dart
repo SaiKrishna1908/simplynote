@@ -94,7 +94,6 @@ class _CreateNoteState extends State<CreateNote> {
       scrollable: false,
       placeholder: 'Title',
       customStyles: quill.DefaultStyles(
-        placeHolder: null,
         lists: quill.DefaultListBlockStyle(
           const TextStyle(color: AppColor.appPrimaryColor),
           Tuple2.fromList([.2, .2]),
