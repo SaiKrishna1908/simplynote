@@ -33,7 +33,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> createUserWithEmailAndPassword(
       String email, String password) async {
-    emit(LoginLoading());
+    emit(LoginLoading(message: 'Creating User...'));
     try {
       final creds =
           await authService.createUserWithEmailAndPassword(email, password);
@@ -48,7 +48,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> signInWithEmailAndPassword(
       String username, String password) async {
-    emit(LoginLoading());
+    emit(LoginLoading(message: 'Logging you in.'));
 
     try {
       final creds = await authService.signInUser(username, password);
@@ -63,7 +63,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> signInWithGoogle() async {
     try {
-      emit(LoginLoading());
+      emit(LoginLoading(message: 'Logging you in'));
       final creds = await GoogleSignIn().signIn();
 
       if (creds == null) {
@@ -80,6 +80,9 @@ class LoginCubit extends Cubit<LoginState> {
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(googleCredential);
       await _setPref<String>(Constants.uid, userCredential.user!.uid);
+      emit(
+        LoginLoading(message: 'Restoring notes from backup'),
+      );
       await StorageService.sync(firestoreStorage, hiveStorage);
     } on PlatformException catch (pe) {
       emit(LoginError(pe.message ?? 'Something went wrong '));

@@ -222,6 +222,7 @@ class _CreateNoteState extends State<CreateNote> {
     if (isDeleted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          dismissDirection: DismissDirection.none,
           action: SnackBarAction(
             label: 'Dismiss',
             onPressed: () {},
@@ -231,6 +232,9 @@ class _CreateNoteState extends State<CreateNote> {
           behavior: SnackBarBehavior.floating,
           content: const Text(
             'Deleted Note',
+            style: TextStyle(
+              color: AppColor.appAccentColor,
+            ),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),

@@ -4,7 +4,11 @@ abstract class LoginState {}
 
 class LoginInitial extends LoginState {}
 
-class LoginLoading extends LoginState {}
+class LoginLoading extends LoginState {
+  LoginLoading({required this.message});
+
+  final String? message;
+}
 
 class LoginSuccess extends LoginState {}
 

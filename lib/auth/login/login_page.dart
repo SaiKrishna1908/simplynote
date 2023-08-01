@@ -281,9 +281,21 @@ class _LoginInViewState extends State<LoginInView> {
               ),
             );
           } else if (state is LoginLoading) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: AppColor.appPrimaryColor,
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(
+                    color: AppColor.appPrimaryColor,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    state.message ?? '',
+                    style: const TextStyle(color: AppColor.appPrimaryColor),
+                  )
+                ],
               ),
             );
           }

@@ -77,6 +77,22 @@ class _MyHomePageState extends State<MyHomePage> {
     notes.sort(
       (a, b) => b.lastAccessedEpoch - a.lastAccessedEpoch,
     );
+    if (notes.isEmpty) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Center(
+          child: Text(
+            'You have no notes.',
+            style: TextStyle(
+              color: Colors.grey.withOpacity(
+                0.8,
+              ),
+              fontSize: 22,
+            ),
+          ),
+        ),
+      );
+    }
     return StaggeredGrid.count(
       crossAxisCount: 2,
       crossAxisSpacing: 10,
@@ -297,7 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 await context.read<MyHomePageCubit>().getUserNotes();
               },
               child: ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: 1,
                 itemBuilder: (context, index) => Padding(
