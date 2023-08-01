@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/create_note_cubit.dart';
@@ -182,6 +183,10 @@ class _CreateNoteState extends State<CreateNote> {
     timer = Timer.periodic(
       Duration(seconds: apiCallCronTimer),
       (timer) async {
+        final sp = await SharedPreferences.getInstance();
+        if (!mounted) {
+          return;
+        }
         context.read<CreateNoteCubit>().createNote(
               NoteModel(
                 _documentUuid,
@@ -193,6 +198,7 @@ class _CreateNoteState extends State<CreateNote> {
                 _contentController.document.toDelta().toJson(),
                 DateTime.now().millisecondsSinceEpoch,
                 false,
+                sp.getString(Constants.uid),
               ),
               _documentUuid,
             );

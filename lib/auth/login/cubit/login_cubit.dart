@@ -7,15 +7,22 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/constants.dart';
+import 'package:simplynote/storage_service.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit()
       : authService = GetIt.I<AuthService>(),
+        firestoreStorage = GetIt.I<StorageService>(
+            instanceName: StorageOptions.firebaseDatabase.name),
+        hiveStorage = GetIt.I<StorageService>(
+            instanceName: StorageOptions.firebaseDatabase.name),
         super(LoginInitial());
 
   final AuthService authService;
+  final StorageService firestoreStorage;
+  final StorageService hiveStorage;
 
   Future<void> isUserLoggedIn() async {
     final isUserLoggedIn = await authService.isUserLoggedIn();
@@ -46,6 +53,7 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       final creds = await authService.signInUser(username, password);
       await _setPref(Constants.uid, creds.user!.uid);
+      await StorageService.sync(firestoreStorage, hiveStorage);
     } on FirebaseAuthException catch (e) {
       emit(LoginError(e.message!));
       return;
@@ -55,18 +63,24 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> signInWithGoogle() async {
     try {
+      emit(LoginLoading());
       final creds = await GoogleSignIn().signIn();
 
-      final googleAuthentication = await creds?.authentication;
+      if (creds == null) {
+        emit(LoginInitial());
+        return;
+      }
+      final googleAuthentication = await creds.authentication;
 
       final googleCredential = GoogleAuthProvider.credential(
-        accessToken: googleAuthentication?.accessToken,
-        idToken: googleAuthentication?.idToken,
+        accessToken: googleAuthentication.accessToken,
+        idToken: googleAuthentication.idToken,
       );
 
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(googleCredential);
       await _setPref<String>(Constants.uid, userCredential.user!.uid);
+      await StorageService.sync(firestoreStorage, hiveStorage);
     } on PlatformException catch (pe) {
       emit(LoginError(pe.message ?? 'Something went wrong '));
       return;

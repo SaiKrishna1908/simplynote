@@ -7,16 +7,16 @@ part 'note.g.dart';
 @HiveType(typeId: 0)
 class NoteModel {
   NoteModel(
-    this.uuid,
-    this.title,
-    this.content,
-    this.firestoreId,
-    this.colorId,
-    this.titleDeltaMap,
-    this.contentDeltaMap,
-    this.lastAccessedEpoch,
-    this.isDeleted,
-  );
+      this.uuid,
+      this.title,
+      this.content,
+      this.firestoreId,
+      this.colorId,
+      this.titleDeltaMap,
+      this.contentDeltaMap,
+      this.lastAccessedEpoch,
+      this.isDeleted,
+      this.userId);
 
   @HiveField(0)
   final String? firestoreId;
@@ -45,6 +45,9 @@ class NoteModel {
   @HiveField(8)
   bool isDeleted = false;
 
+  @HiveField(9)
+  final String? userId;
+
   Map<String, dynamic> toJson() => {
         noteUuid: uuid,
         noteTitle: title,
@@ -53,20 +56,21 @@ class NoteModel {
         titleData: titleDeltaMap,
         contentData: contentDeltaMap,
         lastAccessed: lastAccessedEpoch,
-        isDeletedKey: isDeleted
+        isDeletedKey: isDeleted,
+        userIdKey: userId
       };
 
   static NoteModel fromJson(Map<String, dynamic> json) => NoteModel(
-        json[noteUuid],
-        json[noteTitle],
-        json[noteContent],
-        json[firebaseId],
-        json[colorIdKey],
-        json[titleData],
-        json[contentData],
-        json[lastAccessed],
-        json[isDeletedKey],
-      );
+      json[noteUuid],
+      json[noteTitle],
+      json[noteContent],
+      json[firebaseId],
+      json[colorIdKey],
+      json[titleData],
+      json[contentData],
+      json[lastAccessed],
+      json[isDeletedKey],
+      json[userIdKey]);
 }
 
 const String noteUuid = 'uuid';
@@ -78,3 +82,4 @@ const String titleData = 'titleDelta';
 const String contentData = 'contentDelta';
 const String lastAccessed = 'lastAccessedEpoch';
 const String isDeletedKey = 'isDeleted';
+const String userIdKey = 'userId';

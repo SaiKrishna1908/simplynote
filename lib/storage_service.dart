@@ -155,12 +155,20 @@ class HiveStorage extends StorageService {
 
   @override
   Future<List<NoteModel>> fetchAllUserNotes({includeDeleted = false}) async {
+    final currentUserId = GetIt.I<SharedPreferences>().getString(Constants.uid);
     final notesBox = GetIt.I<Box<NoteModel>>();
 
     if (includeDeleted) {
       return notesBox.values.toList();
     }
-    return notesBox.values.where((element) => !element.isDeleted).toList();
+    return notesBox.values
+        .where(
+          (element) =>
+              !element.isDeleted &&
+              element.userId != null &&
+              element.userId == currentUserId,
+        )
+        .toList();
   }
 
   @override

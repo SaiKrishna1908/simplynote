@@ -26,13 +26,14 @@ class NoteModelAdapter extends TypeAdapter<NoteModel> {
       (fields[6] as List).cast<dynamic>(),
       fields[7] as int,
       fields[8] as bool,
+      fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, NoteModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.firestoreId)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class NoteModelAdapter extends TypeAdapter<NoteModel> {
       ..writeByte(7)
       ..write(obj.lastAccessedEpoch)
       ..writeByte(8)
-      ..write(obj.isDeleted);
+      ..write(obj.isDeleted)
+      ..writeByte(9)
+      ..write(obj.userId);
   }
 
   @override
