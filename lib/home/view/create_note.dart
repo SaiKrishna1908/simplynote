@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/constants.dart';
@@ -212,6 +213,21 @@ class _CreateNoteState extends State<CreateNote> {
     super.dispose();
   }
 
+  NoteModel buildNoteModel() {
+    return NoteModel(
+      _documentUuid,
+      _titleController.document.toPlainText(),
+      _contentController.document.toPlainText(),
+      null,
+      _colorId,
+      _titleController.document.toDelta().toJson(),
+      _contentController.document.toDelta().toJson(),
+      DateTime.now().millisecondsSinceEpoch,
+      false,
+      GetIt.I<SharedPreferences>().getString(Constants.uid),
+    );
+  }
+
   Future<void> deleteNote() async {
     final isDeleted =
         await context.read<CreateNoteCubit>().deleteNote(_documentUuid);
@@ -264,6 +280,13 @@ class _CreateNoteState extends State<CreateNote> {
           ),
         ),
         actions: [
+          IconButton(
+            onPressed: () =>
+                context.read<CreateNoteCubit>().saveNote(buildNoteModel()),
+            icon: const Icon(
+              Icons.save,
+            ),
+          ),
           IconButton(
             onPressed: () => setState(
               () {

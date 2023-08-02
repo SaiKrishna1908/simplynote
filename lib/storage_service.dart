@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +24,12 @@ abstract class StorageService {
   static Future<void> sync(
       StorageService firebaseService, StorageService localStorage) async {
     try {
+      final connectivity = await Connectivity().checkConnectivity();
+
+      if (connectivity == ConnectivityResult.none) {
+        return;
+      }
+
       // get files from cloud and store in localdatabase
 
       final firebaseNotes = await firebaseService.fetchAllUserNotes();
@@ -44,6 +52,8 @@ abstract class StorageService {
           firebaseService.createNote(note);
         }
       }
+    } on PlatformException catch (pe) {
+      debugPrint(pe.message);
     } on Exception catch (e) {
       log(e.toString());
     }
@@ -56,6 +66,8 @@ class FirebaseStorage extends StorageService {
     assert(noteModel.uuid.isNotEmpty);
 
     final firebaseDocumentId = await getNote(noteModel.uuid);
+
+    // FirebaseFirestore.instance.settings.
 
     FirebaseFirestore.instance.runTransaction((transaction) async {
       await createOrUpdateNotebook(
@@ -159,16 +171,19 @@ class HiveStorage extends StorageService {
     final notesBox = GetIt.I<Box<NoteModel>>();
 
     if (includeDeleted) {
-      return notesBox.values.toList();
+      return notesBox.values
+          .where((element) =>
+              element.userId != null && element.userId == currentUserId)
+          .toList();
     }
-    return notesBox.values
+
+    final userNotes = notesBox.values
         .where(
-          (element) =>
-              !element.isDeleted &&
-              element.userId != null &&
-              element.userId == currentUserId,
+          (element) => !element.isDeleted && element.userId == currentUserId,
         )
         .toList();
+
+    return userNotes;
   }
 
   @override

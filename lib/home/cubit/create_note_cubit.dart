@@ -8,19 +8,23 @@ part 'create_note_state.dart';
 
 class CreateNoteCubit extends Cubit<CreateNoteState> {
   CreateNoteCubit(NoteModel notemodel)
-      : super(
+      : hiveStorage = GetIt.I<StorageService>(
+            instanceName: StorageOptions.hiveDatabase.name),
+        super(
           CreateNoteState(notemodel),
         );
 
+  final StorageService hiveStorage;
+
   Future<void> createNote(NoteModel noteModel, String uuid) async {
-    await GetIt.I<StorageService>(
-            instanceName: StorageOptions.hiveDatabase.name)
-        .createNote(noteModel);
+    await hiveStorage.createNote(noteModel);
   }
 
   Future<bool> deleteNote(String uuid) async {
-    return GetIt.I<StorageService>(
-            instanceName: StorageOptions.hiveDatabase.name)
-        .deleteNote(uuid);
+    return hiveStorage.deleteNote(uuid);
+  }
+
+  Future<void> saveNote(NoteModel noteModel) async {
+    await hiveStorage.createNote(noteModel);
   }
 }

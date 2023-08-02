@@ -163,8 +163,20 @@ void main() async {
 
   runApp(
     MaterialApp.router(
+      builder: (context, child) => ScrollConfiguration(
+        behavior: CustomScrollBehaviour(),
+        child: child ?? Container(),
+      ),
       theme: AppColor.lightMode,
       routerConfig: goRouter,
     ),
   );
+}
+
+class CustomScrollBehaviour extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
+  }
 }

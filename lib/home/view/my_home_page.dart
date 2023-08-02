@@ -22,6 +22,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool searchActive = false;
+  bool syncInProgress = false;
+
   Widget _gap() {
     return const SizedBox(
       height: 30,
@@ -189,17 +191,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> sync() async {
-    await StorageService.sync(
-      GetIt.I<StorageService>(
-          instanceName: StorageOptions.firebaseDatabase.name),
-      GetIt.I<StorageService>(
-        instanceName: StorageOptions.hiveDatabase.name,
-      ),
-    );
-    if (!mounted) {
-      return;
-    }
     Navigator.of(context).pop();
+    setState(() {
+      syncInProgress = true;
+    });
+    try {
+      await StorageService.sync(
+        GetIt.I<StorageService>(
+            instanceName: StorageOptions.firebaseDatabase.name),
+        GetIt.I<StorageService>(
+          instanceName: StorageOptions.hiveDatabase.name,
+        ),
+      );
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+    }
+
+    setState(() {
+      syncInProgress = false;
+    });
   }
 
   Future<void> showBottomSheet() async {
@@ -308,41 +318,56 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           } else if (state is MyHomePageLoaded) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                await context.read<MyHomePageCubit>().getUserNotes();
-              },
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: 1,
-                itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      titleWidget(
-                        'Notes',
-                        state.searchNotes.length,
-                      ),
-                      _gap(),
-                      if (searchActive)
-                        Center(
-                          child: SearchBar(
-                            searchCallback: (s) => state.userNotes
-                                .where((element) => element.title.contains(s)),
-                          ),
+            return Stack(
+              children: [
+                IgnorePointer(
+                  ignoring: syncInProgress,
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await context.read<MyHomePageCubit>().getUserNotes();
+                    },
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 1,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            titleWidget(
+                              'Notes',
+                              state.searchNotes.length,
+                            ),
+                            _gap(),
+                            if (searchActive)
+                              Center(
+                                child: SearchBar(
+                                  searchCallback: (s) => state.userNotes.where(
+                                      (element) => element.title.contains(s)),
+                                ),
+                              ),
+                            _gap(),
+                            notesStaggeredView(
+                              state.isSearchActive
+                                  ? state.searchNotes
+                                  : state.userNotes,
+                            ),
+                          ],
                         ),
-                      _gap(),
-                      notesStaggeredView(
-                        state.isSearchActive
-                            ? state.searchNotes
-                            : state.userNotes,
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                Visibility(
+                  visible: syncInProgress,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColor.appSecondaryColor,
+                    ),
+                  ),
+                )
+              ],
             );
           } else if (state is MyHomePageError) {}
           return Container();
