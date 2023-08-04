@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simplynote/app_color.dart';
 import 'package:simplynote/auth/login/cubit/login_cubit.dart';
+import 'package:simplynote/home/view/forgot_password.dart';
 import 'package:simplynote/main.dart';
 
 class LoginInView extends StatefulWidget {
@@ -154,8 +155,21 @@ class _LoginInViewState extends State<LoginInView> {
                       ),
                     ),
                   ),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => goRouter.push(
+                          ForgotPassword.routeName,
+                        ),
+                        child: const Text(
+                          'Forgot Password ?',
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(
-                    height: 50,
+                    height: 20,
                   ),
                   SizedBox(
                     height: 50,

@@ -17,6 +17,7 @@ import 'package:simplynote/home/cubit/create_note_cubit.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/model/note.dart';
 import 'package:simplynote/home/view/create_note.dart';
+import 'package:simplynote/home/view/forgot_password.dart';
 import 'package:simplynote/home/view/my_home_page.dart';
 
 import 'package:simplynote/storage_service.dart';
@@ -90,6 +91,12 @@ final goRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: ForgotPassword.routeName,
+      builder: (context, state) {
+        return const ForgotPassword();
+      },
+    )
   ],
 );
 
