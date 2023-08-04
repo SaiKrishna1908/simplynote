@@ -17,7 +17,7 @@ class LoginCubit extends Cubit<LoginState> {
         firestoreStorage = GetIt.I<StorageService>(
             instanceName: StorageOptions.firebaseDatabase.name),
         hiveStorage = GetIt.I<StorageService>(
-            instanceName: StorageOptions.firebaseDatabase.name),
+            instanceName: StorageOptions.hiveDatabase.name),
         super(LoginInitial());
 
   final AuthService authService;
@@ -79,7 +79,9 @@ class LoginCubit extends Cubit<LoginState> {
 
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(googleCredential);
+
       await _setPref<String>(Constants.uid, userCredential.user!.uid);
+      await StorageService.sync(firestoreStorage, hiveStorage);
       emit(
         LoginLoading(message: 'Restoring notes from backup'),
       );

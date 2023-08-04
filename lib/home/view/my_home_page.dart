@@ -11,7 +11,6 @@ import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/model/note.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
-import 'package:simplynote/storage_service.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -196,13 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
       syncInProgress = true;
     });
     try {
-      await StorageService.sync(
-        GetIt.I<StorageService>(
-            instanceName: StorageOptions.firebaseDatabase.name),
-        GetIt.I<StorageService>(
-          instanceName: StorageOptions.hiveDatabase.name,
-        ),
-      );
+      await context.read<MyHomePageCubit>().syncNotes();
     } on Exception catch (e) {
       debugPrint(e.toString());
     }
@@ -236,7 +229,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontSize: 18,
               ),
             ),
-            onTap: () => sync(),
+            onTap: () async {
+              await sync();
+            },
           ),
           const SizedBox(
             height: 5,
