@@ -177,13 +177,15 @@ class HiveStorage extends StorageService {
           .toList();
     }
 
-    final userNotes = notesBox.values
+    final userNotes = notesBox.values.toList();
+
+    final activeNotes = userNotes
         .where(
           (element) => !element.isDeleted && element.userId == currentUserId,
         )
         .toList();
 
-    return userNotes;
+    return activeNotes;
   }
 
   @override

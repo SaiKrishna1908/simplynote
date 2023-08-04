@@ -121,24 +121,32 @@ class _CreateNoteState extends State<CreateNote> {
     return quill.QuillEditor(
       autoFocus: false,
       controller: _contentController,
-      expands: true,
+      expands: false,
       focusNode: _contentFocusNode,
       scrollController: ScrollController(),
       padding: EdgeInsets.zero,
       readOnly: false,
-      scrollable: true,
+      scrollable: false,
       placeholder: 'Your Notes',
       customStyles: quill.DefaultStyles(
-          paragraph: quill.DefaultTextBlockStyle(
-        const TextStyle(
-          fontSize: 18,
-          color: AppColor.appPrimaryColor,
-          fontWeight: FontWeight.w400,
+        paragraph: quill.DefaultTextBlockStyle(
+          const TextStyle(
+            fontSize: 18,
+            color: AppColor.appPrimaryColor,
+            fontWeight: FontWeight.w400,
+          ),
+          Tuple2.fromList([.2, .2]),
+          Tuple2.fromList([.2, .2]),
+          null,
         ),
-        Tuple2.fromList([.2, .2]),
-        Tuple2.fromList([.2, .2]),
-        null,
-      )),
+        lists: quill.DefaultListBlockStyle(
+          const TextStyle(color: AppColor.appPrimaryColor),
+          Tuple2.fromList([.2, .2]),
+          Tuple2.fromList([.2, .2]),
+          null,
+          null,
+        ),
+      ),
     );
   }
 
@@ -330,9 +338,10 @@ class _CreateNoteState extends State<CreateNote> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.9,
-                        width: MediaQuery.of(context).size.width * 1,
-                        child: _buildContentWidget()),
+                      // height: MediaQuery.of(context).size.height * 0.9,
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: _buildContentWidget(),
+                    ),
                   )
                 ],
               ),
