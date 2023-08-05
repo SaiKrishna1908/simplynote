@@ -205,6 +205,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> delete() async {
+    final cubit = context.read<MyHomePageCubit>();
+    await cubit.delete();
+
+    if (!mounted) {
+      return;
+    }
+
+    goRouter.go('/');
+  }
+
   Future<void> showBottomSheet() async {
     await showModalBottomSheet(
       context: context,
@@ -256,6 +267,22 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(
             height: 5,
           ),
+          ListTile(
+            style: ListTileStyle.list,
+            iconColor: Colors.red,
+            dense: false,
+            leading: const Icon(Icons.remove_circle_rounded),
+            title: const Text(
+              'Delete User',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 18,
+              ),
+            ),
+            onTap: () async {
+              await delete();
+            },
+          )
         ],
       ),
     );
