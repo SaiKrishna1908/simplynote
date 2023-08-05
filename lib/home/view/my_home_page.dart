@@ -206,14 +206,48 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> delete() async {
-    final cubit = context.read<MyHomePageCubit>();
-    await cubit.delete();
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          backgroundColor: AppColor.appAccentColor,
+          title: const Text(
+            'Delete Account',
+            style: TextStyle(
+              color: AppColor.appPrimaryColor,
+            ),
+          ),
+          content: const Text(
+            r'''
+Are you sure you want to delete your account ?
+This operation is not reversible.''',
+            style: TextStyle(
+              color: AppColor.appPrimaryColor,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => goRouter.pop(),
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final cubit = context.read<MyHomePageCubit>();
+                await cubit.delete();
 
-    if (!mounted) {
-      return;
-    }
+                if (!mounted) {
+                  return;
+                }
 
-    goRouter.go('/');
+                goRouter.go('/');
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> showBottomSheet() async {
@@ -273,7 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dense: false,
             leading: const Icon(Icons.remove_circle_rounded),
             title: const Text(
-              'Delete User',
+              'Delete Account',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 18,

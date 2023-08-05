@@ -170,6 +170,7 @@ void main() async {
 
   runApp(
     MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       builder: (context, child) => ScrollConfiguration(
         behavior: CustomScrollBehaviour(),
         child: child ?? Container(),
