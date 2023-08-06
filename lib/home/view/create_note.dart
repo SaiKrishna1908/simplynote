@@ -124,7 +124,8 @@ class _CreateNoteState extends State<CreateNote> {
       expands: false,
       focusNode: _contentFocusNode,
       scrollController: ScrollController(),
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.fromLTRB(
+          0, 0, 0, MediaQuery.of(context).viewInsets.bottom),
       readOnly: false,
       scrollable: false,
       placeholder: 'Your Notes',
@@ -337,9 +338,12 @@ class _CreateNoteState extends State<CreateNote> {
                   hline(),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: SizedBox(
-                      // height: MediaQuery.of(context).size.height * 0.9,
-                      width: MediaQuery.of(context).size.width * 1,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 1,
+                        minWidth: MediaQuery.of(context).size.width * 1,
+                        minHeight: MediaQuery.of(context).size.height,
+                      ),
                       child: _buildContentWidget(),
                     ),
                   )

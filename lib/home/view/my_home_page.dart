@@ -133,9 +133,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget noteWidget(NoteModel noteModel) {
     final cardColor = Constants.noteColors[noteModel.colorId].withOpacity(0.8);
     return InkWell(
-      onTap: () => goRouter
-          .push('/edit/${noteModel.uuid}', extra: noteModel)
-          .then((value) => context.read<MyHomePageCubit>().getUserNotes()),
+      onTap: () =>
+          goRouter.push('/edit/${noteModel.uuid}', extra: noteModel).then(
+        (value) async {
+          await context.read<MyHomePageCubit>().getUserNotes();
+        },
+      ),
       child: Container(
         constraints: const BoxConstraints(
           maxHeight: 120,
