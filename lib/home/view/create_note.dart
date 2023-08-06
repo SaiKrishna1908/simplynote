@@ -52,6 +52,12 @@ class _CreateNoteState extends State<CreateNote> {
 
   bool _showtoolBar = false;
 
+  final _paragraphVerticalSpacing = 1.0;
+  final _paragraphLineSpacing = 1.0;
+
+  final _listsPointVerticalSpacing = 2.0;
+  final _listsPointLineSpacing = 3.0;
+
   Widget _buildSimpleNoteToolbar() {
     return quill.QuillToolbar.basic(
       toolbarIconAlignment: WrapAlignment.spaceBetween,
@@ -98,8 +104,8 @@ class _CreateNoteState extends State<CreateNote> {
       customStyles: quill.DefaultStyles(
         lists: quill.DefaultListBlockStyle(
           const TextStyle(color: AppColor.appPrimaryColor),
-          Tuple2.fromList([.2, .2]),
-          Tuple2.fromList([.2, .2]),
+          Tuple2.fromList([1.0, 1.0]),
+          Tuple2.fromList([1.0, 1.0]),
           null,
           null,
         ),
@@ -110,7 +116,7 @@ class _CreateNoteState extends State<CreateNote> {
             fontWeight: FontWeight.w400,
           ),
           Tuple2.fromList([.2, .2]),
-          Tuple2.fromList([.2, .2]),
+          Tuple2.fromList([0.2, 0.2]),
           null,
         ),
       ),
@@ -136,15 +142,30 @@ class _CreateNoteState extends State<CreateNote> {
             color: AppColor.appPrimaryColor,
             fontWeight: FontWeight.w400,
           ),
-          Tuple2.fromList([.2, .2]),
-          Tuple2.fromList([.2, .2]),
+          Tuple2.fromList(
+              [_paragraphVerticalSpacing, _paragraphVerticalSpacing]),
+          Tuple2.fromList([_paragraphLineSpacing, _paragraphLineSpacing]),
+          null,
+        ),
+        leading: quill.DefaultTextBlockStyle(
+          const TextStyle(color: AppColor.appPrimaryColor),
+          Tuple2.fromList(
+            [1.0, 1.0],
+          ),
+          Tuple2.fromList(
+            [1.0, 1.0],
+          ),
           null,
         ),
         lists: quill.DefaultListBlockStyle(
           const TextStyle(color: AppColor.appPrimaryColor),
-          Tuple2.fromList([.2, .2]),
-          Tuple2.fromList([.2, .2]),
-          null,
+          Tuple2.fromList(
+              [_listsPointVerticalSpacing, _listsPointVerticalSpacing]),
+          Tuple2.fromList([_listsPointLineSpacing, _listsPointLineSpacing]),
+          BoxDecoration(
+            color: AppColor.appPrimaryColor,
+            border: Border.all(color: AppColor.appPrimaryColor),
+          ),
           null,
         ),
       ),
