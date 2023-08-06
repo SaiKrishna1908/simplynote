@@ -9,6 +9,7 @@ import 'package:simplynote/auth/auth_service.dart';
 import 'package:simplynote/constants.dart';
 import 'package:simplynote/home/cubit/my_home_page_cubit.dart';
 import 'package:simplynote/home/model/note.dart';
+import 'package:simplynote/home/widget/read_only_quill_editor.dart';
 import 'package:simplynote/home/widget/search_bar.dart';
 import 'package:simplynote/main.dart';
 
@@ -132,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget noteWidget(NoteModel noteModel) {
     final cardColor = Constants.noteColors[noteModel.colorId].withOpacity(0.8);
+
     return InkWell(
       onTap: () =>
           goRouter.push('/edit/${noteModel.uuid}', extra: noteModel).then(
@@ -158,25 +160,15 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                noteModel.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
+              ReadOnlyQuillEditor(
+                delta: noteModel.titleDeltaMap,
               ),
               _gap(),
               Expanded(
-                child: Text(
-                  noteModel.content,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    wordSpacing: 0.5,
+                child: ClipRRect(
+                  clipBehavior: Clip.hardEdge,
+                  child: ReadOnlyQuillEditor(
+                    delta: noteModel.contentDeltaMap,
                   ),
                 ),
               )
