@@ -133,7 +133,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget noteWidget(NoteModel noteModel) {
     final cardColor = Constants.noteColors[noteModel.colorId].withOpacity(0.8);
-
+    Future<void> routeCallBack() =>
+        goRouter.push('/edit/${noteModel.uuid}', extra: noteModel).then(
+          (value) async {
+            await context.read<MyHomePageCubit>().getUserNotes();
+          },
+        );
     return InkWell(
       onTap: () =>
           goRouter.push('/edit/${noteModel.uuid}', extra: noteModel).then(
@@ -157,19 +162,30 @@ class _MyHomePageState extends State<MyHomePage> {
             horizontal: 20,
             vertical: 20,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Stack(
             children: [
-              ReadOnlyQuillEditor(
-                delta: noteModel.titleDeltaMap,
-              ),
-              _gap(),
-              Expanded(
-                child: ClipRRect(
-                  clipBehavior: Clip.hardEdge,
-                  child: ReadOnlyQuillEditor(
-                    delta: noteModel.contentDeltaMap,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ReadOnlyQuillEditor(
+                    delta: noteModel.titleDeltaMap,
                   ),
+                  _gap(),
+                  Expanded(
+                    child: ClipRRect(
+                      clipBehavior: Clip.hardEdge,
+                      child: ReadOnlyQuillEditor(
+                        delta: noteModel.contentDeltaMap,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              InkWell(
+                onTap: () => routeCallBack(),
+                // ignore: use_colored_box
+                child: Container(
+                  color: Colors.transparent,
                 ),
               )
             ],
