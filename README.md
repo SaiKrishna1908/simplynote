@@ -1,16 +1,24 @@
-# simplynote
+# *simplynote*
 
-A new Flutter project.
+ A simple note taking app developed in flutter
 
-## Getting Started
+---
+## Features
 
-This project is a starting point for a Flutter application.
+- Offline note taking
+- Cloud backup and sync
+- WYSIWYG editor
 
-A few resources to get you started if this is your first Flutter project:
+## Showcase
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![alt 1.jpeg ](assets/showcase/1.jpeg)
+---
+![alt 2.jpeg ](assets/showcase/2.jpeg)
+---
+![alt 3.jpeg ](assets/showcase/3.jpeg)
+---
+![alt 4.jpeg ](assets/showcase/4.jpeg)
+---
+![alt 5.jpeg ](assets/showcase/5.jpeg)
+---
+![alt 6.jpeg ](assets/showcase/6.jpeg)
