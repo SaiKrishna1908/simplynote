@@ -140,6 +140,10 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         );
     return InkWell(
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onTap: () =>
           goRouter.push('/edit/${noteModel.uuid}', extra: noteModel).then(
         (value) async {
@@ -182,6 +186,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               InkWell(
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
                 onTap: () => routeCallBack(),
                 // ignore: use_colored_box
                 child: Container(
